@@ -1,0 +1,140 @@
+dn: DC_LDAP
+dc: DOMAIN_LDAP
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+o: LDAP_DOMAIN
+
+dn: ou=grupos,DC_LDAP
+objectClass: top
+objectClass: organizationalUnit
+ou: grupos
+description: Repositorio de grupos utilizados no expresso
+structuralObjectClass: organizationalUnit
+
+dn: ou=usuarios,DC_LDAP
+objectClass: top
+objectClass: organizationalUnit
+ou: usuarios
+description: Repositorio de usuarios do sistema expresso
+structuralObjectClass: organizationalUnit
+
+dn: ou=listas,DC_LDAP
+objectClass: top
+objectClass: organizationalUnit
+ou: listas
+description: Repositorio de listas  utilizados no expresso
+structuralObjectClass: organizationalUnit
+
+dn: uid=listaexemplo,ou=listas,DC_LDAP
+cn: listaexemplo
+givenName: listaexemplo
+sn: listaexemplo
+displayName: listaexemplo
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: top
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: qmailuser
+objectClass: mailman
+objectClass: phpgwaccount
+phpgwaccounttype: l
+uid: listaexemplo
+homeDirectory: /bin/false
+gidNumber: 111
+uidNumber: 55551000
+mail: listaexemplo@LDAP_DOMAIN
+mailForwardingAddress: expresso-admin@LDAP_DOMAIN
+admlista: expresso-admin@LDAP_DOMAIN
+naoModerado: expresso-admin@LDAP_DOMAIN
+
+dn: cn=grupo-admin,ou=grupos,DC_LDAP
+gidNumber: 900
+cn: grupo-admin
+structuralObjectClass: posixGroup
+description: Grupo de Administradores do Expresso V3
+objectClass: top
+objectClass: posixGroup
+
+dn: cn=grupo-user,ou=grupos,DC_LDAP
+gidNumber: 901
+cn: grupo-user
+structuralObjectClass: posixGroup
+description: Grupo de Usuarios do Expresso V3
+objectClass: top
+objectClass: posixGroup
+
+dn: uid=expresso-admin,ou=usuarios,DC_LDAP
+cn: Expresso Admin
+givenName: Expresso
+sn: Admin
+userPassword: PWD_LDAP
+displayName: Expresso Admin
+objectClass: inetOrgPerson
+objectClass: top
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: phpgwAccount
+objectClass: qmailuser
+uid: expresso-admin
+homeDirectory: /bin/false
+gidNumber: 900
+uidNumber: 1000
+mail: expresso-admin@LDAP_DOMAIN
+phpgwaccounttype: u
+
+dn: uid=testador,ou=usuarios,DC_LDAP
+cn: Testador Expresso
+givenName: Testador
+sn: Expresso
+userPassword: PWD_LDAP
+displayName: Testador Expresso
+objectClass: inetOrgPerson
+objectClass: top
+objectClass: person
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: phpgwAccount
+objectClass: qmailuser
+uid: testador
+homeDirectory: /bin/false
+uidNumber: 1475095803
+gidNumber: 901
+mail: testador@LDAP_DOMAIN
+phpgwaccounttype: u
+
+dn: cn=ldap-admin,DC_LDAP
+cn: LDAP Admin
+givenName: LDAP
+sn: Admin
+userPassword: PWD_LDAP
+displayName: LDAP Admin
+objectClass: inetOrgPerson
+objectClass: top
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: expresso-admin
+homeDirectory: /bin/false
+gidNumber: 700
+uidNumber: 700
+
+dn: uid=cyrus-admin,DC_LDAP
+cn: Administrador Cyrus
+givenName: Administrador
+sn: Cyrus
+userPassword: PWD_LDAP
+displayName: Administrador do servico cyrus imap
+objectClass: inetOrgPerson
+objectClass: top
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: phpgwAccount
+uid: cyrus-admin
+homeDirectory: /bin/false
+gidNumber: 800
+uidNumber: 800
+mail: cyrus-admin@LDAP_DOMAIN
+phpgwaccounttype: u
+
+

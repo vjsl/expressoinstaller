@@ -1,0 +1,204 @@
+#IDIOMA - CODIGO DA MENSAGEM - MENSAGEM
+#LANGUAGE - MSG CODE - MESSAGE
+#PORTUGUESE - BRAZIL
+pt_br::1::Erro: Arquivo functions.lib nao encontrado
+pt_br::2::Um programa necessario para o instalador nao esta presente neste sistema operacional. \n\nO Instalador vai instala-lo automaticamente para voce...\n
+pt_br::3::O programa ausente foi o 
+pt_br::4::Saindo...
+pt_br::5::Expresso v3
+pt_br::6::Selecione um idioma:
+pt_br::7::Erro: Voce nao possui privilegios de root para executar este instalador.
+pt_br::8::Gostaria de atualizar seu apt-get antes de iniciar a instalacao?
+pt_br::9::E bom manter seu sistema operacional atualizado antes da estrutura do expresso estar implantada. \n\nGostaria de fazer um upgrade no seu sistema antes de iniciar a instalacao?
+pt_br::10::Erro: O instalador nao funciona com esta versao do sistema operacional. Consulte a documentacao.
+pt_br::11::Erro: O sistema operacional e incompativel com a versao deste instalador. Consulte a documentacao para maiores detalhes.
+pt_br::12::Instalacao cancelada.
+pt_br::13::Recurso ainda nao implementado.
+pt_br::14::Aviso de erro.
+pt_br::15::O instalador do expresso pode tentar instalar este programa para voce. \n\nDeseja que instalador tente instalar este programa?\n1-SIM\n2-NAO, SAIR DO INSTALADOR\n\n
+pt_br::16::Houve um problema na configuracao do sistema de locales em seu sistema operacional. Por favor, configure-o manualmente conforme requisitado na documentacao do Expresso v3
+pt_br::17::Prosseguir
+pt_br::18::Selecione os servicos que deveram ser instalados neste servidor. \n\nCaso voce possua apenas este servidor que ira compor o Expresso v3, recomendamos que deixe todas as opcoes marcadas. \n\nCaso va separar sua estrutura de correio, marque os servicos que deveram ser instalados nesta maquina apenas.
+pt_br::19::Interface WEB do Expresso
+pt_br::20::Diretorio de contas de usuarios
+pt_br::21::Banco de dados para o Expresso
+pt_br::22::Servico IMAP (para visualizar mensagens)
+pt_br::23::Servico SMTP (para envio de mensagens)
+pt_br::24::Instalando o OpenLDAP...
+pt_br::25::OpenLDAP
+pt_br::26::\nConfigurando o OpenLDAP para o Expresso...
+pt_br::27::Autenticacao SASL
+pt_br::28::Instalando o Autenticador SASL
+pt_br::29::\nConfigurando o autenticador SASL para servicos especificos do Expresso v3
+pt_br::30::Voce nao selecionou um servidor LDAP para instalacao neste servidor.\n\nSignifica que o servidor LDAP esta em outro servidor ou sera ainda instalado em outra maquina.\n\n\nDigite o IP ou nome dns do servidor LDAP de sua rede para garantir a autenticacao correta do modulo SASLAuth.\nExemplo: 172.16.35.32\n         ldap.meudominio.com.br:
+pt_br::31::Testando o autenticador SASL
+pt_br::32::Testando o autenticador SASL: Falhou
+pt_br::33::Instalando o Apache2 com PHP5...
+pt_br::34::Apache2
+pt_br::35::\nConfigurando o Apache2 com PHP5 para o Expresso...
+pt_br::36::O pacote do Expresso nao foi encontrado na pasta 'download' deste instalador. \n\nGostaria que o instalador tente baixar o pacote direto da internet?\n\n
+pt_br::37::Descompactando o pacote do Expresso v3...
+pt_br::38::O teste de autenticacao usando o SASL falhou. Se o seu servidor LDAP ainda nao foi instalado em outro servidor, este poderia ser um dos motivos.\n\nCaso deseje repetir e testar a instalacao do SASL, clique em 'Tentar Novamente', ou clique em 'Ignorar' para continuar a instalacao do Instalador.
+pt_br::39::Tentar novamente
+pt_br::40::Ignorar
+pt_br::41::IMAP Cyrus
+pt_br::42::\nConfigurando o Cyrus IMAP e Sieve com autenticacao SASL para o Expresso v3...
+pt_br::43::Digite o nome de sua organizacao. \nEste nome sera configurado em varios servicos:\n\nNao coloque acentos e nem espacos!\n\nExemplos:\nccarj\naeronautica\nserpro\n\n
+pt_br::44::Digite o dominio de sua organizacao. \nEste nome sera configurado em varios servicos:\n\nNao coloque acentos e nem espacos!\n\nExemplos:\naer.mil.br\ngoogle.com.br\nserpro.gov.br\n\n
+pt_br::45::Criando certificado do Apache2 para o HTTPS...
+pt_br::46::Nada especificado.
+pt_br::47::Instalando o PostgreSQL...
+pt_br::48::PostgreSQL
+pt_br::49::\nConfigurando o PostgreSQL...
+pt_br::50::SMTP Postfix
+pt_br::51::\nConfigurando o Postfix...
+pt_br::52::Instalador do Expresso v3 concluido.\n\nTeste os servicos para ver se tudo esta ok.\n\n
+pt_br::53::Digite abaixo uma senha:\n\nNao esqueca esta senha, pois ela sera utilizada em todos os servicos do Expresso v3 para administracao e acesso!\n\n
+pt_br::54::Favor, repita a senha novamente:
+pt_br::55::Senha incorreta
+pt_br::56::Senhas em branco nao sao permitidas, tente novamente...
+pt_br::57::As senhas nao conferem, tente novamente...
+pt_br::58::Tipo de Instalacao
+pt_br::59::\nSelecione como deseja instalar o Expresso v3:\n
+pt_br::60::Todos os servicos neste servidor
+pt_br::61::Quero selecionar quais servicos serao instalados
+pt_br::62::Pacote Expresso
+pt_br::63::O instalador do Expresso v3 nao conseguiu baixar o pacote do Expresso direto da internet.\n\nVerifique se o pacote ainda existe no site e caso seja outro, entre dentro do script do instalador e altere as variaves EXPRESSO_PACKAGE e EXPRESSO_DOWNLOAD.\n\nNome do pacote nao encontrado: 
+pt_br::64::O teste de acesso a internet falhou.\n\nVoce utiliza a internet atraves de um servidor proxy?\n\n
+pt_br::65::Digite o IP do servidor proxy:
+pt_br::66::Seu Proxy requer autenticacao de usuario?
+pt_br::67::Digite o login de autenticacao para o servidor Proxy:
+pt_br::68::Digite a senha de autenticacao para o servidor Proxy:
+pt_br::69::Internet
+pt_br::70::Configuracao de Proxy
+pt_br::71::Informe a porta utilizada pelo servidor Proxy:
+pt_br::72::O instalador nao conseguiu baixar o pacote com as configuracoes de Proxy informadas. Verifique:\n-Se sua maquina possui um IP valido na rede;\n-Se seu acesso ao proxy esta bloqueado;\n-Se o nome do pacote ainda existe no site da comunidade Expresso e se a URL de download do instalador esta valida;\n\nNome do pacote registrado para baixar: 
+pt_br::73::Gostaria de tentar baixar o pacote novamente utilizando o Proxy?
+pt_br::74::Testando sua conexao de internet, aguarde...
+pt_br::75::Fazendo download do pacote do Expresso v3, aguarde...\n\nNome do pacote: 
+pt_br::76::Configuracao do setup do Expresso v3
+pt_br::77::\nO setup do Expresso v3 pode ser configurado via browser ou automaticamente por este instalador.\n\nGostaria de configurar o setup do Expresso diretamente por este instalador?\n
+pt_br::78::OK, apos a finalizacao deste instalador, entre no browser e digite o endereco abaixo para acessar o setup do Expresso v3 e configura-lo manualmente:\n\nNao esqueca de seguir as instrucoes na wiki de como configurar o setup via web manualmente. O link para esta configuracao esta no arquivo Leia-me.txt, dentro da pasta deste instalador e tambem pode ser visto na Documentacao da Comunidade Expresso v3.\n\n
+pt_br::79::Digite o IP do servidor SMTP de sua rede.\nExemplo: 172.16.35.32\n\n
+pt_br::80::Digite o IP do servidor IMAP de sua rede.\nExemplo: 172.16.35.32\n\n
+pt_br::81::Na proxima tela, sera exibido o acordo de licenca do Tine.\n\nAguarde uns 20 segundos, pois o instalador vai tentar digitar para voce a aceitacao da licenca de uso do Tine e tudo sera automatico sem necessidade de voce digitar.\n\n Caso isto nao ocorra apos o tempo informado, voce devera responder 'yes' para ambas as perguntas para que a configuracao seja efetivada.
+pt_br::82::Nao foi encontrado registro MX no seu DNS.\n\nO registro MX e obrigatorio para o correto recebimento de e-mails no seu Expresso v3.\n\nPara resolver isto, crie um registro do tipo MX no DNS de sua rede. \n\nDeseja prosseguir a instalacao do Expresso v3 mesmo assim?
+pt_br::83::Teste de DNS
+pt_br::84::O usuario optou por configurar o setup automaticamente via instalador, iniciando processo...
+pt_br::85::Debug: A linha de comando que rodou o setup automatico foi:
+pt_br::86::O PHP nao foi localizado nesta maquina, algo deu errado na instalacao do WebServer Apache, rode o instalador novamente e verifique atentamente o que esta ocorrendo.\n\nA configuracao automatica nao podera ser executada!\n\n
+pt_br::87::Acoes deste Instalador
+pt_br::88::\nSelecione o que este Instalador devera fazer nesta maquina:\n
+pt_br::89::Vai instalar o Expresso do zero
+pt_br::90::Apenas atualiza o Expresso v3 existente
+pt_br::91::Instalar
+pt_br::92::Atualizar
+pt_br::93::A atualizacao afeta apenas o servico WEB do Expresso v3 e este servico nao foi encontrado neste servidor, portanto, a atualizacao nao podera continuar.
+pt_br::94::Selecione ao menos uma opcao ou clique em cancelar.
+pt_br::95::A atualizacao do Expresso foi executada.\n\nFoi criado um backup do antigo Expresso v3 existente neste servidor.\n\nO nome da pasta que contem o backup do antigo Expresso esta em:\n
+#
+#IDIOMA - CODIGO DA MENSAGEM - MENSAGEM
+#LANGUAGE - MSG CODE - MESSAGE
+#ESPANHOL - ESPAÑOL
+#esp::1::Mantenha sempre o id de linguagem e numero
+#esp::2::Exemplo de linha\nNova Linha
+#esp::3::Saindo...
+#
+#IDIOMA - CODIGO DA MENSAGEM - MENSAGEM
+#LANGUAGE - MSG CODE - MESSAGE
+#INGLES - ENGLISH
+eng::1::Error: File functions.lib not found
+eng::2::A necessary program for installer wasn't found in Operating System. \n\nThe Installer will install it automatically for you
+eng::3::The program was missing is
+eng::4::Exiting
+eng::5::Expresso v3
+eng::6::Choose a language:
+eng::7::Error: You don't have enough privilege to execute this installer.
+eng::8::Would you like to update the apt-get program before starting the installer?
+eng::9::It's a good practice to keep the Operating System up-to-date before the infrastructure being implemented. \n\nWould you like to upgrade the Operating System before starting the installer?
+eng::10::Error: The installer doesn't work with this Operating System version. Check the documentation.
+eng::11::Error: The Operating System is incompatible with this installer version. Check the documentation to get more details.   
+eng::12::Installer canceled.
+eng::13::Resource not implemented.
+eng::14::Error
+eng::15::The installer will try to install this program for you. \n\nWould you like which installer tries for you?\n1-YES\n2-NO, EXIT\n\n
+eng::16::There is a problem at locale configuration in Operating System. Please, fix it manually according Expressov3 documentation.
+eng::17::Continue
+eng::18::Select the services which must be installed this host. \n\nWe recommend selecting all options for Expresso V3 Standalone Server.\n\n Or select just services will be installed this host.
+eng::19::Web Server
+eng::20::User account's repository.
+eng::21::Data Base
+eng::22::Imap Server (used to view messages)
+eng::23::Smtp Server (used to send messages)
+eng::24::Installing OpenLDAP
+eng::25::OpenLDAP
+eng::26::\nSetting OpenLDAP for Expresso
+eng::27::SASL Authentication
+eng::28::Installing SASL Authentication
+eng::29::\nSetting SASL Authentication for specifics services on Expresso V3.
+eng::30::You haven't selected an OpenLDAP Server for this installation.\n\nPlease type the ip address or the name of host which intend to be used as OpenLDAP Server to guarantee a correct SASL authentication.\e.g. 172.16.35.32\n   ldap.meudominio.com.br:
+eng::31::Trying SASL authentication
+eng::32::Trying SASL authentication: Failed
+eng::33::Installing Apache2 and PHP5
+eng::34::Apache2
+eng::35::\nSetting Apache2 and PHP5 for Expresso
+eng::36::ExpressoV3 package not found in download folder.\n\nWould you like which installer tries download the package from internet?\n\n
+eng::37::Unzipping ExpressoV3 package
+eng::38::SASL Authentication failed.
+eng::39::Try again
+eng::40::Ignore
+eng::41::Cyrus Imap
+eng::42::\nSetting Cyrus Imap and Sieve with SASL Authentication for Expresso V3.
+eng::43::Type the Organization Name. \nThis name will be necessary for several services.\n\nDo not use spaces!\n\nExamples:\nccarj\naeronautica\nserpro\n\n
+eng::44::Type the Organization Domain. \nThis name will be necessary for several services.\n\nDo not use spaces!\n\nExamples:\naer.mil.br\ngoogle.com.br\nserpro.gov.br\n\n
+eng::45::Creating SSL Certified for Apache.
+eng::46::Nothing
+eng::47::Installing PostgreSQL
+eng::48::PostgreSQL
+eng::49::\nSetting PostgreSQL
+eng::50::SMTP Postfix
+eng::51::\nSetting Postfix
+eng::52::Expresso V3 installer concluded.\n\nTry the services to confirm everything is ok.\n\n
+eng::53::Type a password:\n\nDon't forget this password, it will be necessary for administration and access to all services.
+eng::54::Please, type the password again:
+eng:55::Password incorrect
+eng::56::Empty passwords aren't allowed, try again
+eng::57::Password doesn't match, try again
+eng::58::Type of Installation
+eng::59::\nChoose which kind of Expresso V3 installation you need:\n
+eng::60::All services in same host
+eng::61::Choose which services will be installed
+eng::62::Expresso Package
+eng::63::The installer wasn't able to get Expresso V3 package directly from Internet.\n\nCheck if package exists on website otherwise change EXPRESSO_PACKAGE and EXPRESSO_DOWNLOAD variables into script installer, according the package found on website.
+eng::64::Internet access failed.\n\nDo you access internet through a proxy Server?
+eng::65::Type the IP Proxy address:
+eng::66::Does your Proxy Server require authentication?
+eng::67::Type the username for Proxy Server:
+eng::68::Type the password for Proxy Server:
+eng::69::Internet
+eng::70::Proxy configuration:
+eng::71::Type the Proxy Server's port:
+eng::72::The installer wasn't able to get Expresso V3 package through Proxy Server. Please check:\n-If this host has connectivity with the network;\n-If your proxy access is blocked;\n-If the package name exists in Expresso community website and if the installer URL is OK;\n\nPackage name to download:
+eng::73::Would you like to download the package again through Proxy Server?
+eng::74::Trying to access internet, wait
+eng::75::Downloading ExpressoV3 package, wait  \n\nPackage Name:
+eng::76::ExpressoV3 configuration
+eng::77::\nExpressoV3 installer might be configured via browser or automatically by this installer.\n\nWould you like to setup ExpressoV3 by this installer?\n
+eng::78::OK, after the installer to be finished, access the ExpressoV3 setup on your browser and type the ip address below to set up it manually.
+eng::79::Type the SMTP Server IP Address.\ne.g:172.16.35.32\n\n
+eng::80::Type the IMAP Server IP Address.\ne.g:172.16.35.32\n\n
+eng::81::Next screen type yes twice to agree with Tine license.
+eng::82::MX record not found.\n\nMX records are necessary to receive emails from anywhere.\n\nTo fix this, check if the record exist otherwise will be necessary create it. \n\nWould you like to proceed the installer without a MX record?
+eng::83::DNS check 
+eng::84::User decided to automatically configure setup. Starting process...
+eng::85::Debug: Comand line executed during automatic setup:
+eng::86::PHP was not installed. Something went wrong with Apache webserver install. Run installer again and check what is happening.\n\nThe automatic setup could not be run!\n\n
+eng::87::Setup acctions
+eng::88::\nSelect setup options on this machine:\n
+eng::89::Setup will install Expresso from scratch
+eng::90::Only updates the pre existing Expresso V3
+eng::91::Install
+eng::92::Update
+eng::93::The update only affects expresso v3 web service. But expresso was not found in this server. Setup could not continue.
+eng::94::Selects at least one option or cancel.
+eng::95::Expresso V3 updates executed.\n\nA backup from previous expresso v3 was created.\n\nThe backup folder is in:\n

@@ -1,0 +1,45 @@
+# Porta de escuta para https / Listen Port for https
+NameVirtualHost *:443
+
+# Configuracoes do Virtualhost / Virtualhost configurations
+<VirtualHost *:443>
+
+	# E-mail para suporte / Support mail
+    ServerAdmin postmaster@LDAP_DOMAIN
+
+	# O expresso esta aqui / The expresso is here
+    DocumentRoot /var/www/html/expressov3
+
+	# Nome do virtualhost
+    ServerName expressov3.prodemge.gov.br
+
+	# Configuracoes da pasta / Folder config
+    <Directory /var/www/html/expressov3/>
+       Options FollowSymLinks MultiViews
+       AllowOverride All
+       Order allow,deny
+       allow from all
+    </Directory>
+    
+	# Configuracoes do SETUP / SETUP config
+    <Directory /var/www/html/expressov3/Setup>
+       Options FollowSymLinks MultiViews
+       AllowOverride All
+       Order allow,deny
+       allow from all
+    </Directory>
+
+	# Configuracoes do certificado / Certificate configurations
+	SSLEngine on
+	SSLCertificateFile /etc/apache2/ssl/apache.crt
+	SSLCertificateKeyFile /etc/apache2/ssl/apache.key
+
+	# O Log esta localizado aqui / The log are here
+    ErrorLog /var/log/apache2/error.log
+
+	# Nivel de Log / Log level
+    LogLevel debug
+
+	# Log personalizado / Personalized log
+    CustomLog /var/log/apache2/access.log combined
+</VirtualHost>

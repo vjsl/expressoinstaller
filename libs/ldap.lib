@@ -1,0 +1,123 @@
+#!/bin/bash
+
+# Expresso v3 shell script ldap functions
+# This file are files dependencies. Do not run it alone!
+
+PKGS_LDAP="slapd ldap-utils"
+
+# This function install ldap server on host
+function install_ldap() {
+	clear
+	echo $( show_msg 24 )  &>> $log
+
+	act_title=$( show_msg 25 )
+	act_msg=$( show_msg 26 ) 
+
+	if [ "$my_os" == "debian" ]; then
+
+		#Disabling apt interaction to user
+		export DEBIAN_FRONTEND=noninteractive
+
+		#Installing openldap packages	
+		debconf-apt-progress -- apt-get -qq -y install $PKGS_LDAP
+
+		unset DEBIAN_FRONTEND
+
+		( 
+
+		echo 20
+
+		service slapd stop &>> $log
+
+		echo 30
+
+		#ldap db cleanup
+		rm -f /var/lib/ldap/alock  &>> $log
+		rm -f /var/lib/ldap/_*  &>> $log
+		rm -f /var/lib/ldap/log.*  &>> $log
+		rm -f /var/lib/ldap/*.bdb &>> $log
+
+		cp -rf $my_path/files/debian/etc/ldap/slapd.conf /etc/ldap/slapd.conf &>> $log
+		cp -rf $my_path/files/debian/etc/ldap/schema/qmailuser.schema /etc/ldap/schema/qmailuser.schema &>> $log
+                cp -rf $my_path/files/debian/etc/ldap/schema/phpgwaccount.schema /etc/ldap/schema/phpgwaccount.schema &>> $log
+                cp -rf $my_path/files/debian/etc/ldap/schema/mailman.schema /etc/ldap/schema/mailman.schema &>> $log
+
+		echo 40
+
+		if [ -d /etc/ldap/slapd.d.old ]; then
+			rm -rf /etc/ldap/slapd.d.old &>> $log
+		fi
+
+		if [ -d /etc/ldap/slapd.d ]; then
+			mv /etc/ldap/slapd.d /etc/ldap/slapd.d.old &>> $log
+		fi
+
+		sed -i "s/DC_LDAP/$MY_DC/g" /etc/ldap/slapd.conf
+
+		) | dialog --backtitle "$act_backtitle" --title "$act_title" --gauge "$act_msg" 8 40 0
+
+		if [ ! "$THE_PASSWORD" ]; then
+			get_password
+		fi
+
+		if [ ! "$THE_PASSWORD" ]; then
+			show_msg 4
+			exit 0
+		fi
+
+		act_title=$( show_msg 25 )
+		act_msg=$( show_msg 26 ) 
+
+		(
+
+		hash_pwd=$( slappasswd -h {MD5} -s $THE_PASSWORD )
+
+		sed -i "s#PWD_LDAP#$hash_pwd#g" /etc/ldap/slapd.conf
+
+		cp -rf $my_path/files/debian/etc/initial.ldif /tmp/initial.ldif
+
+		sed -i "s#PWD_LDAP#$hash_pwd#g" /tmp/initial.ldif
+		sed -i "s/DC_LDAP/$MY_DC/g" /tmp/initial.ldif
+		sed -i "s/LDAP_DOMAIN/$MY_DOMAIN/g" /tmp/initial.ldif
+		# RCS
+		sed -i "s/USR_CPF/$USR_CPF/g" /tmp/initial.ldif
+		sed -i "s/USR_NOME/$USR_NOME/g" /tmp/initial.ldif
+		sed -i "s/USR_SOBRENOME/$USR_SOBRENOME/g" /tmp/initial.ldif
+		sed -i "s/USR_SENHA/$USR_SENHA/g" /tmp/initial.ldif
+		sed -i "s/USR_EMAIL/$USR_EMAIL/g" /tmp/initial.ldif
+
+
+		tmp_dc=$( echo $MY_DOMAIN | awk -F '.' '{print $1}' )
+		sed -i "s/DOMAIN_LDAP/$tmp_dc/g" /tmp/initial.ldif
+
+		service slapd start 
+                #cp -rf $my_path/files/config.inc.php /tmp/config.inc.php
+                sed -i "s/ZPMYDN/$MY_DC/g" /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+                sed -i "s/JABBER_DOMAIN/$MY_DOMAIN/g" /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+                sed -i "s/JABBER_DOMAIN/$MY_DOMAIN/g" /var/www/html/expressov3/config.inc.php
+                chown www-data /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+
+		echo 50
+
+		sleep 2
+
+		service slapd stop 
+
+		echo 60
+
+		slapadd -c -l /tmp/initial.ldif &>> $log
+
+		echo 80
+
+		chown -R openldap.openldap /var/lib/ldap/* 
+
+		service slapd start  
+
+		echo 100
+
+		) | dialog --backtitle "$act_backtitle"  --title "$act_title" --gauge "$act_msg" 8 40 50
+		
+	fi
+}
+
+

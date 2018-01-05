@@ -1,0 +1,102 @@
+#!/bin/bash
+
+# Expresso v3 shell script SMTP functions
+# This file are files dependencies. Do not run it alone!
+
+PKGS_SMTP="postfix postfix-ldap postfix-pgsql"
+
+# This function check if imap is working 
+function install_smtp() {
+
+	act_title=$( show_msg 50 )
+	act_msg=$( show_msg 51 ) 
+
+	# Secound stage, checking for unwanted packages
+	PKGS="exim4 exim4-base exim4-config exim4-daemon-light"
+
+	unwanted_pkg=""
+
+	for act_pkg in $PKGS; do
+		if [ "$( find_pkg $act_pkg )" == "OK" ]; then
+			unwanted_pkg=$( echo "$unwanted_pkg $act_pkg" )
+		fi
+	done
+
+	# Uninstalling unwanted packages
+	if [ -n "$unwanted_pkg" ]; then
+		#echo "$unwanted_pkg"
+		debconf-apt-progress -- apt-get -qq -y --purge remove $unwanted_pkg
+	fi
+
+
+	#Disabling apt interaction to user
+	export DEBIAN_FRONTEND=noninteractive
+
+	#Installing smtp packages	
+	debconf-apt-progress -- apt-get -qq -y install  $PKGS_SMTP
+
+	unset DEBIAN_FRONTEND	
+
+	(
+
+	echo 40
+
+	echo "$MY_DOMAIN"' lmtp:unix:/var/run/cyrus/socket/lmtp' > /etc/postfix/transport
+	echo '.'"$MY_DOMAIN"' lmtp:unix:/var/run/cyrus/socket/lmtp' >> /etc/postfix/transport
+
+	echo "$MY_DOMAIN OK" > /etc/postfix/expresso-dominios
+        echo "$MY_DOMAIN" > /etc/mailname
+        sed -i "s/127.0.1.1/#127.0.1.1/g" /etc/hosts
+	echo "127.0.0.1	$MY_DOMAIN" >> /etc/hosts
+
+	postmap /etc/postfix/transport
+	postmap /etc/postfix/expresso-dominios 
+
+	echo 50
+
+	echo 'pwcheck_method: saslauthd' > /etc/postfix/sasl/smtpd.conf
+	echo 'mech_list: PLAIN LOGIN' >> /etc/postfix/sasl/smtpd.conf
+
+	cp -rf $my_path/files/debian/etc/postfix/main.cf /etc/postfix/main.cf
+
+	if [ "$IP_LDAP" ]; then
+		sed -i "s/IP_LDAP/$IP_LDAP/g" /etc/postfix/main.cf
+	else
+		if [ $opt_ldap -eq 1 ]; then
+			sed -i "s/IP_LDAP/127.0.0.1/g" /etc/postfix/main.cf
+		else
+			get_ldap_ip
+			sed -i "s/IP_LDAP/$LDAP_IP/g" /etc/postfix/main.cf
+		fi
+	fi
+
+	echo 70
+
+	act_network=$( ip route show | grep -v 'default' | awk -F '/' '{print $1}' | tail -1 )
+
+	if [ "$act_network" ]; then
+		sed -i "s/IP_REDE/$act_network/g" /etc/postfix/main.cf
+	else
+		sed -i "s/IP_REDE/ /g" /etc/postfix/main.cf
+	fi
+
+	sed -i "s/SMTP_DOMAIN/$MY_DOMAIN/g" /etc/postfix/main.cf
+	sed -i "s/DC_LDAP/$MY_DC/g" /etc/postfix/main.cf
+
+	cp -rf $my_path/files/debian/etc/postfix/master.cf /etc/postfix/master.cf
+
+	echo 80
+
+	gpasswd -a postfix sasl
+	gpasswd -a postfix mail
+	gpasswd -a cyrus mail 
+
+	echo 90
+
+	service postfix restart 
+
+	echo 100
+
+	) | dialog --backtitle "$act_backtitle" --title "$act_title" --gauge "$act_msg" 8 40 0
+
+}

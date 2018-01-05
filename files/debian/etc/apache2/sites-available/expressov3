@@ -1,0 +1,38 @@
+# Criado pelo instalador do Expresso v3 / Created by Expresso v3 Installer
+
+# NameVirtualHost *:80
+
+# Configuracao do Virtualhost / VirtualHost Configuration
+<VirtualHost *:80>
+	#E-mail de suporte / Support Mail
+    ServerAdmin postmaster@LDAP_DOMAIN
+
+	# O Expresso esta localizado aqui / The Expresso are here
+    DocumentRoot /var/www/expressov3
+
+	# Configuracoes da pasta / Folder config
+    <Directory /var/www/html/expressov3/>
+       Options FollowSymLinks MultiViews
+       AllowOverride All
+       Order allow,deny
+       allow from all
+    </Directory>
+
+	# Configuracoes do SETUP / SETUP config
+    <Directory /var/www/html/expressov3/setup>
+       Options FollowSymLinks MultiViews
+       AllowOverride All
+       Order allow,deny
+       allow from all
+    </Directory>
+
+	# O Log esta localizado aqui / The log are here
+    ErrorLog /var/log/apache2/error.log
+
+	# Nivel de Log / Log level
+    LogLevel debug
+	
+	# Log personalizado / Personalized log
+    CustomLog /var/log/apache2/access.log combined
+</VirtualHost>
+

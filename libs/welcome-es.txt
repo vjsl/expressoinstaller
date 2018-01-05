@@ -1,0 +1,15 @@
+Bem vindo ao Setup do Expresso v3!
+
+Este instalador tem como objetivo configurar o 
+Expresso v3 neste computador de forma facil.
+
+Voce podera:
+
+1 - Fazer uma instalacao limpa do Expresso v3; ou
+
+2 - Fazer uma atualizacao do Expresso v3 para 
+uma nova versao existente na Comunidade.
+
+Clique em 'Prosseguir' para continuar com o
+processo de configuracao...
+

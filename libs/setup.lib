@@ -1,0 +1,120 @@
+#!/bin/sh
+
+#####################################################################
+#	Instalador para Expresso usando Banco de dados Postgres - Openldap - Cyrus - Postfix
+#   
+#   Criado por      : COMUNIDADE EXPRESSO V3
+#
+#####################################################################
+
+
+function configure_setup() {
+
+	if [ "$( find_prog php )" == "Fail" ]; then
+		# Se o php nao constar como instalado, sera informada da impossibilidade de prosseguir
+
+		act_title=$( show_msg 76 )
+		act_msg=$( show_msg 86 ) 
+
+		dialog --backtitle "$act_backtitle" --backtitle "$act_title" --msgbox "$act_msg" 0 0
+
+	else
+		# Se o php constar como instalado corretamente, ele continuara a configuracao
+
+		#Exclue e recria BD
+		psql -q -U postgres -c "DROP DATABASE $bd;" &> /dev/null
+		sleep 1
+		psql -q -U postgres -c "CREATE DATABASE $bd WITH ENCODING 'UTF-8' TEMPLATE template0;" &> /dev/null
+		sleep 1
+		psql -q -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE $bd TO $user;" &> /dev/null
+		sleep 1
+
+                echo 'Configura plugin para config.inc.php(configurações) não mais no bd' >> $log
+                # executar o plugin(abortar se não existe)
+                php /var/www/html/expressov3/plugin.php -a  2>>$log
+
+                echo 'Ativando o multidomínio...' >> $log
+                php /var/www/html/expressov3/plugin.php -c  2>>$log
+             
+                echo 'Copia um template de config para o diretório base(sem multidomínio)' >> $log
+                echo '#Obs o multidomínio deverá ser configurado manualmente' >> $log
+                # criar um config padrão no ditretório base
+                # para o caso de config em arquivo o setup que segue irá mergear as configurações
+                #cp -r $my_path/files/config.inc.php /var/www/html/expressov3/config.inc.php  2>>$log 
+                #chown www-data /var/www/html/expressov3/config.inc.php
+
+		echo 'Copia o template de config global para o diretório base' >> $log
+                echo '#Obs o multidomínio deverá ser configurado manualmente' >> $log
+                # copia o config de dominio global
+                cp -r $my_path/files/configs/config.inc.php /var/www/html/expressov3/config.inc.php  2>>$log 
+                chown www-data /var/www/html/expressov3/config.inc.php
+		sed -i "s/CONFIG_DOMAIN/$MY_DOMAIN/g" /var/www/html/expressov3/config.inc.php
+		sed -i "s#INPUT_PASSWORD#$THE_PASSWORD#g" /var/www/html/expressov3/config.inc.php
+		
+             
+                echo 'Criando diretório de cache default(/tmp/expressov3/tine20cache)' >> $log
+                echo 'Log do Expresso em /tmp/expressov3/expressov3.log' >> $log
+                echo 'Area temp em /tmp/expressov3/tine20tmp' >> $log
+                echo 'Arquivos em /tmp/expressov3/tine20files' >> $log
+                rm -rf /tmp/expressov3  2>>$log
+                mkdir -p /tmp/expressov3/$MY_DOMAIN/tine20cache  2>>$log
+                chown -R www-data /tmp/expressov3/$MY_DOMAIN/tine20cache  2>>$log
+                mkdir -p /tmp/expressov3/$MY_DOMAIN/tine20tmp  2>>$log
+                chown -R www-data /tmp/expressov3/$MY_DOMAIN/tine20tmp  2>>$log
+                mkdir -p /tmp/expressov3/$MY_DOMAIN/tine20files  2>>$log
+                chown -R www-data /tmp/expressov3/$MY_DOMAIN/tine20files  2>>$log
+                chown -R www-data /tmp/expressov3/$MY_DOMAIN  2>>$log
+                echo "inicio da Instalação..." > /tmp/expressov3/$MY_DOMAIN/expressov3.log
+                chown www-data /tmp/expressov3/$MY_DOMAIN/expressov3.log
+                chown www-data /tmp/expressov3 
+			
+		# copia o config de dominio pre instalacao
+		cp -r $my_path/files/configs/domains/config.inc.php_preinstall /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php  2>>$log
+		chown www-data /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+		sed -i "s/CONFIG_PASSWORD/$THE_PASSWORD/g" /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+		sed -i "s/CONFIG_DOMAIN/$MY_DOMAIN/g" /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+		sed -i "s/CONFIG_DC_LDAP/$MY_DC/g" /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+		sed -i "s/CONFIG_ORG/$MY_ORG/g" /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+
+		# copia o novo codigo do Expresso (CRIA ROLE GERENTE AUTOMATICAMENTE)
+		# cp -r $my_path/files/debian/etc/Tinebase_Acl_Roles.php /var/www/html/expressov3/Tinebase/Acl/Roles.php
+		# cp -r $my_path/files/debian/etc/Setup_Initialize.php /var/www/html/expressov3/Setup/Initialize.php
+		# cp -r $my_path/files/debian/etc/Admin_Setup_Initialize.php /var/www/html/expressov3/Admin/Setup/Initialize.php
+		# copia o novo codigo do Expresso (corrige BUG memberUid)
+# #####		cp -r $my_path/files/debian/etc/Tinebase_Group_Ldap.php /var/www/html/expressov3/Tinebase/Group/Ldap.php
+
+		# instala todos os modulos do expresso
+		php /var/www/html/expressov3/setup.php --install 'Tinebase,Addressbook,Admin,ActiveSync,AppLauncher,Calendar,Expressodriver,Expressomail,Messenger,Tasks,Webconference' acceptedTermsVersion=1 adminLoginName="expresso-admin" adminPassword="$THE_PASSWORD"
+
+		# copia o config de dominio pos instalacao
+		mv /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php_old  2>>$log
+		cp -r $my_path/files/configs/domains/config.inc.php_posinstall /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php  2>>$log
+		chown www-data /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+		sed -i "s/CONFIG_PASSWORD/$THE_PASSWORD/g" /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+		sed -i "s/CONFIG_DOMAIN/$MY_DOMAIN/g" /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+		sed -i "s/CONFIG_DC_LDAP/$MY_DC/g" /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+		sed -i "s/CONFIG_ORG/$MY_ORG/g" /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+
+		# copia as imagens
+		cp -r $my_path/files/images/bg.jpg /var/www/html/expressov3/ 2>>$log
+		cp -r $my_path/files/images/banner.png /var/www/html/expressov3/ 2>>$log
+
+		# RCS: (pode ficar engessado) cria a role de gerente
+		# psql -U postgres -d db_$MY_ORG -a -f $my_path/files/debian/etc/accountManagerRole.sql 2>>$log
+
+		# envia um email de boas vindas
+		# sendmail "$USR_EMAIL@$MY_DOMAIN" < <(cat $my_path/files/template/email.txt | sed "s/EML_USER/$USR_EMAIL/g" | sed "s/EML_DOMAIN/$MY_DOMAIN/g")
+
+		echo "------------" >> $log
+		show_msg 84 >> $log
+		show_msg 85 >> $log
+
+		echo "-------------" >> $log
+                echo "FIM DA INSTALACAO...." >> /tmp/expressov3/expressov3.log
+                rm -f /var/lib/php5/ses* >> $log
+                chown www-data /var/www/html/expressov3/config.inc.php
+                chown www-data /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+
+
+	fi
+}

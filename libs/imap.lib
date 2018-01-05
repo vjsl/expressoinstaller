@@ -1,0 +1,106 @@
+#!/bin/bash
+
+# Expresso v3 shell script IMAP functions
+# This file are files dependencies. Do not run it alone!
+
+PKGS_IMAP="cyrus-admin-2.4 cyrus-common-2.4 cyrus-replication-2.4 cyrus-pop3d-2.4 cyrus-nntpd-2.4 cyrus-clients-2.4 cyrus-murder-2.4 cyrus-imapd-2.4 cyrus-doc-2.4 libcyrus-imap-perl24 libmail-imapclient-perl libparse-recdescent-perl libterm-readkey-perl libterm-readline-perl-perl"
+
+# This function check if imap is working 
+function test_imap() {
+	if [ "$( find_prog imtest )" == "Fail" ]; then
+		echo "Fail"
+	else
+		if [ ! "$THE_PASSWORD" ]; then
+			get_password
+		fi
+
+		if [ ! "$THE_PASSWORD" ]; then
+			show_msg 4
+			exit 0
+		fi
+
+		local act_result=$( ( sleep 1; echo ". logout" ) | imtest -v -p 143 -a cyrus-admin -w "$THE_PASSWORD" 127.0.0.1 &> /dev/stdout | grep -c 'Authentication failed' ) 
+
+		if [ $act_result -eq 0 ]; then
+			echo "OK"
+		else
+			echo "Fail"
+		fi
+	fi	
+}
+
+# This function install apache2 server on host
+function install_imap() {
+
+	act_title=$( show_msg 41 )
+	act_msg=$( show_msg 42 )
+
+	if [ "$my_os" == "debian" ]; then
+
+		#Disabling apt interaction to user
+		export DEBIAN_FRONTEND=noninteractive
+
+		#Installing openldap packages	
+		debconf-apt-progress -- apt-get -qq -y install  $PKGS_IMAP
+
+		unset DEBIAN_FRONTEND
+
+		(
+
+		echo 30
+
+		cp -rf $my_path/files/debian/etc/imapd.conf /etc/imapd.conf &>> $log
+
+		cp -rf $my_path/files/debian/etc/cyrus.conf /etc/cyrus.conf &>> $log
+
+		sed -i "/sieve/d" /etc/services
+
+		echo 'sieve        4190/tcp' >> /etc/services
+		echo 'sieve        4190/udp' >> /etc/services
+
+		echo 50 
+
+		if [ ! "$IP_IMAP_SERVER" ]; then
+			for act_iface in $( get_ifaces ); do
+				if [ "$act_iface" ]; then	
+					IP_IMAP_SERVER=$( ip -4 addr show $act_iface | grep 'inet' | awk '{ print $2}' | awk -F '/' '{print $1}' )
+					break
+				fi
+			done
+		fi
+
+		sleep 0.5
+
+		sed -i "s/IP_IMAP_SERVER/$IP_IMAP_SERVER/g" /etc/cyrus.conf
+
+		service cyrus-imapd restart 
+
+		echo 70
+
+		sleep 1
+
+		# what?
+		#if [ -d /var/spool/cyrus/mail/domain/ ]; then
+		#	rm -rf /var/spool/cyrus/mail/domain/* $>> $log
+		#	su - cyrus -c "/usr/sbin/cyrreconstruct -rf user/*@$MY_DOMAIN" &>> $log
+		#fi
+		
+		# clear vdom mailboxoes
+		#for i in $(ctl_mboxlist -d | awk -F"\t" {'print $2'} | awk {'print $NF'} | sort -u)
+		#do
+		#	$my_path/libs/cyrus_vdom_delete.pl "$THE_PASSWORD" "$i"
+		#done
+
+		# cria as caixas dos usuarios no cyrus
+		for i in $(ldapsearch -x -h localhost -D cn=ldap-admin,$MY_DC -w $THE_PASSWORD -b $MY_DC -LLL phpgwaccounttype=u | grep -i ^mail | awk {'print $2'} | awk -F@ {'print $1'})
+		do	
+			$my_path/libs/cyrus_vdom.pl "$THE_PASSWORD" "$i" "$MY_DOMAIN" &>> $log	
+			sleep .1
+		done
+
+		echo 100
+
+		) | dialog --backtitle "$act_backtitle" --title "$act_title" --gauge "$act_msg" 9 60 0
+
+	fi
+}

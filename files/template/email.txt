@@ -1,0 +1,39 @@
+Return-Path: <no-reply@EML_DOMAIN>
+Subject: Bem vindo ao ExpressoBr
+From: "Expresso Admin" <no-reply@EML_DOMAIN>
+To: EML_USER@EML_DOMAIN
+Content-Type: multipart/alternative; charset=UTF-8;
+ boundary="=_e54c62be3f652bd5e165c26c1446328f"
+MIME-Version: 1.0
+
+--=_e54c62be3f652bd5e165c26c1446328f
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+=0A=0A=0A=0A=0A  =0A=0A    Bem vindo!=0A    Seja bem vindo ao Expressobr=
+=0A  =0A=0A  =0A=0A    Clique aqui e descubra mais sobre o expresso.=0A=
+  =0A=0A  =0A=0A    Atenciosamente,=0A    Equipe de administra=C3=A7=C3=
+=A3o=0A  =0A=0A=0A
+
+--=_e54c62be3f652bd5e165c26c1446328f
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<html><head><meta http-equiv=3D"Content-Type" content=3D"text/html; char=
+set=3DUTF-8"><title></title><style type=3D"text/css">.expressomail-body-=
+blockquote {margin: 5px 10px 0 3px;padding-left: 10px;border-left: 2px s=
+olid #000088;} </style></head><body><div style=3D"margin-top: 20px">=0A<=
+div style=3D"max-width:75%; min-width=3D250px; margin: auto;">=0A=0A  <d=
+iv style=3D"background-color: #006594; padding: 5px; border-radius: 5px=
+ 5px 0 0">=0A    <h1 style=3D"color: #FFF; font-weight: bold;">Bem vindo=
+!</h1>=0A    <p style=3D"color: #FFF; ">Seja bem vindo ao Expressobr</p>=
+=0A  </div>=0A=0A  <div style=3D"padding: 50px 5px; border-left: 1px sol=
+id #E0E0E0; border-right: 1px solid #E0E0E0; text-align: center;">=0A  =
+  <p><a href=3D"http://www.serpro.gov.br">Clique aqui</a> e descubra mai=
+s sobre o expresso.</p>=0A  </div>=0A=0A  <div style=3D"background-color=
+: #ff9955; padding: 5px; border-radius: 0 0 5px 5px">=0A    <p style=3D"=
+color: #FFF;"><small>Atenciosamente,</small></p>=0A    <p style=3D"color=
+: #FFF;"><small>Equipe de administra=C3=A7=C3=A3o</small></p>=0A  </div>=
+=0A=0A</div>=0A</div></body></html>
+
+--=_e54c62be3f652bd5e165c26c1446328f--

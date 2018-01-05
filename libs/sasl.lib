@@ -1,0 +1,89 @@
+#!/bin/bash
+
+
+# Expresso v3 shell script sasl functions
+# This file are files dependencies. Do not run it alone!
+
+PKGS_SASL="libsasl2-modules sasl2-bin"
+
+function test_sasl() {
+
+	if [ "$( find_prog testsaslauthd )" == "OK" ]; then
+		if [ ! "$THE_PASSWORD" ]; then
+			get_password
+		fi
+
+		if [ ! "$THE_PASSWORD" ]; then
+			show_msg 4
+			exit 0
+		fi
+
+		if [ $( testsaslauthd -u expresso-admin -p "$THE_PASSWORD"  | grep -c 'OK' ) -eq 1 ]; then
+			echo "OK"
+		else
+			echo "Fail"
+		fi
+	else
+		echo "Fail"
+	fi
+}
+
+# This function install sasl service on host
+function install_sasl() {
+	clear
+
+	act_title=$( show_msg 27 )
+	act_msg=$( show_msg 29 ) 
+
+	if [ "$my_os" == "debian" ]; then
+
+		#Installing openldap packages	
+		debconf-apt-progress -- apt-get -qq -y install  $PKGS_SASL
+
+		(
+
+		cp -rf $my_path/files/debian/etc/default/saslauthd /etc/default/saslauthd &>> $log
+
+		echo 50
+
+		cp -rf $my_path/files/debian/etc/saslauthd.conf /etc/saslauthd.conf &>> $log
+
+		sed -i "s/DC_LDAP/$MY_DC/g" /etc/saslauthd.conf
+		sed -i "s/SASL_DOMAIN/$MY_DOMAIN/g" /etc/saslauthd.conf
+		sed -i "s/SASL_PASSWORD/$THE_PASSWORD/g" /etc/saslauthd.conf
+
+		echo 80
+
+		) | dialog --backtitle "$act_backtitle" --title "$act_title" --gauge "$act_msg" 8 60 0
+
+
+		if [ $all_services -ne 1 ]; then
+			if [ ! "$LDAP_IP" ]; then
+				if [ $opt_ldap -ne 1 ]; then
+					act_msg=$( show_msg 30 )
+					local result=$( dialog --backtitle "$act_backtitle" --inputbox "$act_msg" 0 0 2>&1 )
+					LDAP_IP=$result
+				else
+					LDAP_IP='127.0.0.1'
+				fi
+			else
+				LDAP_IP='127.0.0.1'
+			fi
+		fi
+		
+		( 
+
+		sed -i "s/127.0.0.1/$LDAP_IP/g" /etc/default/saslauthd &>> $log
+
+		echo 90
+
+		service saslauthd restart &>> $log
+
+		echo 100
+
+		) | dialog --backtitle "$act_backtitle" --title "$act_title" --gauge "$act_msg" 8 60 80
+
+	fi
+}
+
+

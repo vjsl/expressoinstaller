@@ -1,0 +1,89 @@
+# Created by Expresso v3 Installer
+
+smtpd_banner = $myhostname ESMTP $mail_name (Debian/GNU)
+
+biff = no
+
+append_dot_mydomain = no
+
+readme_directory = no
+
+transport_maps = hash:/etc/postfix/transport
+
+lmtp_destination_recipient_limit = 80
+
+smtpd_sasl_auth_enable = yes
+
+smtpd_client_restrictions = permit_sasl_authenticated
+
+myhostname = SMTP_DOMAIN
+
+alias_maps = hash:/etc/aliases
+
+alias_database = hash:/etc/aliases
+
+myorigin = /etc/mailname
+
+mydestination = SMTP_DOMAIN, localhost
+
+mynetworks = 127.0.0.0/8, IP_REDE
+
+mailbox_size_limit = 0
+
+recipient_delimiter = +
+
+inet_interfaces = all
+
+inet_protocols = ipv4
+
+ldaphost = IP_LDAP
+ldapbase = DC_LDAP
+
+#virtual_alias_maps = ldap:mailboxes
+virtual_alias_maps = ldap:mailboxes, ldap:grupos, ldap:listas
+
+#Aliases
+#aliases_server_host = 127.0.0.1
+#aliases_version = 3
+#aliases_timeout = 10
+#aliases_chase_referral = 0
+#aliases_search_base = $ldapbase 
+#aliases_query_filter = (&(|(mail=%s)(mailAlternateAddress=%s))(objectClass=posixAccount)(phpgwAccountType=u)(deliveryMode=forwardOnly)(accountStatus=ac
+#tive))
+#aliases_domain = hash:/etc/postfix/expresso-dominios
+#aliases_result_attribute = mailForwardingAddress
+
+mailboxes_server_host = $ldaphost
+mailboxes_version = 3
+mailboxes_timeout = 100
+mailboxes_search_base = $ldapbase
+mailboxes_query_filter = (&(mail=%s)(objectClass=posixAccount))
+mailboxes_bind = no
+mailboxes_domain = hash:/etc/postfix/expresso-dominios
+mailboxes_result_attribute = uid 
+
+listas_server_host = $ldaphost 
+listas_version = 3
+listas_timeout = 1000 
+#listas_chase_referral = 0
+listas_search_base = $ldapbase 
+listas_query_filter = (&(mail=%s)(objectClass=Mailman)(deliveryMode=forwardOnly))
+listas_domain = hash:/etc/postfix/expresso-dominios 
+listas_result_attribute = mailForwardingAddress
+listas_bind = no 
+listas_bind_dn = uid=expresso-admin,ou=usuarios,$ldapbase
+listas_bind_pw = serpro 
+
+#Grupos
+grupos_server_host = $ldaphost
+grupos_version = 3
+grupos_timeout = 10
+grupos_chase_referral = 0
+grupos_search_base = $ldapbase 
+grupos_query_filter = (&(cn=%u)(objectClass=posixGroup))
+grupos_bind = no
+grupos_domain = hash:/etc/postfix/expresso-dominios
+grupos_result_attribute = memberUid
+
+
+

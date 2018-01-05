@@ -1,0 +1,22 @@
+dn: uid=listaexemplo,ou=listas,dc=serpro,dc=gov,dc=br
+cn: listaexemplo
+givenName: listaexemplo 
+sn: listaexemplo 
+userPassword: {MD5}IABXOxAjHjYeLm2KmKMZew==
+displayName: listaexemplo
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: top
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: qmailUser
+objectClass: mailman
+uid: listaexemplo
+homeDirectory: /bin/false
+gidNumber: 901
+uidNumber: 55551000
+mail: listaexemplo@serpro.gov.br
+mailForwardingAddress: expresso-admin@serpro.gov.br
+admlista: expresso-admin@serpro.gov.br
+naoModerado: expresso-admin@serpro.gov.br
+

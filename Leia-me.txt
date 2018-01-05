@@ -1,0 +1,84 @@
+INSTALADOR DO EXPRESSO V3
+
+Creditos deste instalador:
+
+Versao        : 0.99
+Autor         : Vitor José da Silva Lima
+Data          : 05 Janeiro 2018
+e-mail        : vjsl@cin.ufpe.br
+Contribuidores: mguazzardo, julio, Daniel Coletti
+
+
+======================================================
+
+INSTRUCOES DE USO:
+
+Como executar o instalador?
+
+1 - Baixe o pacote do instalador
+
+2 - Logue-se como root
+
+4 - Descompacte o instalador com o comando: tar -xvzf instalador-expressov3-xxxx.tar.gz -C /root
+
+5 - Execute o instalador com o comando: /root/expresso-v3/install.sh
+
+=======================================================
+
+Observações:
+
+- Caso você opte por efetuar a configuracão do setup via web (modo manual), acesse o link abaixo, que é da wiki do Expresso e ensina a instalar e configurar todos os serviços existentes no Expresso v3. Também ensina a otimizar seu Expresso para melhor experiência em sua Empresa:
+
+Link para configuração do setup via WEB:
+
+		https://comunidadeexpresso.serpro.gov.br/mediawiki/index.php/Admins/Instala%C3%A7%C3%A3o#Configurando_via_browser.28setup.php.29
+
+Link ensinando a instalar o Expresso manualmente:
+
+		https://comunidadeexpresso.serpro.gov.br/mediawiki/index.php/Admins/Instala%C3%A7%C3%A3o
+
+
+=======================================================
+
+Implementações futuras a serem feitas para este instalador:
+
+- Tradução dos arquivos welcome-es.txt e welcome-eng.txt para o espanhol e inglês respectivamente;
+- Adicionar traduções em espanhol e inglês no arquivo 'lang.lib';
+- Configuração de proxy para atualização, upgrade e instalação de pacotes no apt-get;
+- Incluir log para o processo de instalação (gerar toda a saida no arquivo install.log);
+- Permitir o instalador para outros sistemas operacionais;
+
+========================================================
+
+Correcoes feitas:
+
+Versao 0.95 - 28 MAI 2014
+- (Melhoria)  : Agora o instalador faz ATUALIZACAO do Expressov3 se desejado. O instalador detecta a pasta /var/www/html/expressov3 e automaticamente exibe e opcao de atualizacao para o usuario;
+- (Update)    : Criadas funcoes check_internet, download_expresso e config_proxy para otimizacao do codigo do instalador. O codigo de autenticacao por proxy foi refeito;
+- (Melhoria)  : Criada pasta de backup automatico. Agora os backups poderam ser jogados na pasta /var/www/htmlbackup-expressov3-XXXX-XXXX. Por enquanto, apenas o que esta em /var/www/htmlexpressov3 esta sendo feito backup.
+
+Versao 0.94rev2 - 23 MAI 2014
+- (Update)  : Ajustado para baixar pacote kristina.20140410.02.tar.bz2 do repositorio;
+
+Versao 0.94 - 07 MAI 2014
+- (Bug Fix) : Ao rodar o setup automatico, o IP do SMTP era exibido como DC completo do LDAP ao inves do IP do SMTP. Corrigido alterando a variavel de smtp_host="$tmp_dc" para smtp_host="$SMTP_IP";
+- (Bug Fix) : Ao instalar o modulo de Web, ocorriam varias linhas de erro via console. Removido pacote php5-dev que dependia de outros pacotes nao necessarios ao expresso.
+
+Versao 0.93rev3 - 05 MAI 2014
+- (Bug Fix) : Corrigido problema que ao verificar o MX, se não houver o comando DIG, o instalador retorna "Fail" ao inves de prosseguir corretamente. Acrescentado o pacote "dnsutils" na linha de instalação de pacotes fundamentais. Daniel Coletti, muito obrigado por esta contribuição!
+
+Versao 0.93rev2 - 27 ABR 2014
+- (Melhoria): Acrescentadas informacoes da documentacao da wiki que ensina a configurar o setup via web manualmente. Os links foram disponibilizados no arquivo Leia-me.txt. Agradecimentos ao amigo julio;
+
+Versao 0.93 - 26 ABR 2014
+- (Melhoria): Configuração de setup do expresso automaticamente via linha de comando. Agradecimentos ao amigo mguazzardo que contribuiu com a correção. Agradecimentos ao amigo mguazzardo;
+
+Versao 0.92 - 24 ABR 2014
+- (Bug Fix) : Corrigida rotina de verificacao do diretorio corrente onde esta o instalador e correta configuracao da variavel my_path;
+- (Bug Fix) : Corrigido caminho para o setup.php no dialogo de informacao ao usuario no final da instalação;
+
+Versao 0.91 - 23 ABR 2014
+- (Bug Fix) : Acrescentada recurso onde o instalador e cancelado caso nao seja executado como root. Existia o recurso, porém, esquecido de adicionar linha "exit 0".
+
+Versao 0.90 - 23 ABR 2014
+- (Melhoria): Instalador automatizado do Expresso v3 disponibilizado ao publico para teste, homologação e implantação.

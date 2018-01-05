@@ -1,0 +1,315 @@
+<?php
+return array (
+  'filesdir' => '/tmp/',
+  'maxLoginFailures' => 5,
+  'mailapplication' => 'Expressomail',
+  'maxfiltertypeemail' => 5,
+  'maxfiltertypecalendar' => 5,
+  'disableaccesslog' => true,
+  'enabledApplications' => 'Tinebase,Admin,Addressbook,Calendar,Tasks,Webconference,Messenger,Expressomail,AppLauncher,ActiveSync',
+  'modssl' => 
+  array (
+    'redirectUrlmodSsl' => 'http://10.0.2.15',
+    'username_callback' => 'Custom_Auth_ModSsl_UsernameCallback_Cpf',
+    'casfile' => '/opt/security/cas/todos.cer',
+    'crlspath' => '/opt/security/crls',
+  ),
+  'maxMessageSize' => 52428800,
+  'Tasks' => 
+  array (
+    'taskStatus' => '{"name":"taskStatus","records":[{"id":"NEEDS-ACTION","value":"No response","is_open":1,"icon":"images\\/oxygen\\/16x16\\/actions\\/mail-mark-unread-new.png","system":true},{"id":"COMPLETED","value":"Completed","is_open":0,"icon":"images\\/oxygen\\/16x16\\/actions\\/ok.png","system":true},{"id":"CANCELLED","value":"Cancelled","is_open":0,"icon":"images\\/oxygen\\/16x16\\/actions\\/dialog-cancel.png","system":true},{"id":"IN-PROCESS","value":"In process","is_open":1,"icon":"images\\/oxygen\\/16x16\\/actions\\/view-refresh.png","system":true}]}',
+    'taskPriority' => '{"name":"taskPriority","records":[{"id":"LOW","value":"low","icon":"images\\/oxygen\\/16x16\\/actions\\/go-down.png","system":true},{"id":"NORMAL","value":"normal","icon":"images\\/oxygen\\/16x16\\/actions\\/go-next.png","system":true},{"id":"HIGH","value":"high","icon":"images\\/oxygen\\/16x16\\/actions\\/go-up.png","system":true},{"id":"URGENT","value":"urgent","icon":"images\\/oxygen\\/16x16\\/emblems\\/emblem-important.png","system":true}]}',
+  ),
+  'Messenger' => 
+  array (
+    'messenger' => '{"domain":"exemplo.org","resource":"qualquer coisa","format":"email","rtmfpServerUrl":"","tempFiles":"\\/tmp"}',
+    'domain' => '"exemplo.org"',
+    'resource' => '""',
+    'format' => '"email"',
+    'rtmfpServerUrl' => '""',
+    'tempFiles' => '"\\/tmp\\/"',
+    'disableVideoChat' => 'false',
+  ),
+  'Expressomail' => 
+  array (
+    'expressomailSettings' => '{"imapSearchMaxResults":1000,"autoSaveDraftsInterval":15,"reportPhishingEmail":"","enableMailDirExport":false}',
+    'vacationTemplatesContainerId' => '3',
+  ),
+  'Calendar' => 
+  array (
+    'attendeeStatus' => '{"name":"attendeeStatus","records":[{"id":"NEEDS-ACTION","value":"No response","icon":"images\\/oxygen\\/16x16\\/actions\\/mail-mark-unread-new.png","system":true},{"id":"ACCEPTED","value":"Accepted","icon":"images\\/oxygen\\/16x16\\/actions\\/ok.png","system":true},{"id":"DECLINED","value":"Declined","icon":"images\\/oxygen\\/16x16\\/actions\\/dialog-cancel.png","system":true},{"id":"TENTATIVE","value":"Tentative","icon":"images\\/calendar-response-tentative.png","system":true}]}',
+    'attendeeRoles' => '{"name":"attendeeRoles","records":[{"id":"REQ","value":"Required","system":true},{"id":"OPT","value":"Optional","system":true}]}',
+  ),
+  'AppLauncher' => 
+  array (
+    'exampleStatus' => '{"name":"exampleStatus","records":[{"id":"COMPLETED","value":"Completed","is_open":0,"icon":"images\\/oxygen\\/16x16\\/actions\\/ok.png","system":true},{"id":"CANCELLED","value":"Cancelled","is_open":0,"icon":"images\\/oxygen\\/16x16\\/actions\\/dialog-cancel.png","system":true},{"id":"IN-PROCESS","value":"In process","is_open":1,"icon":"images\\/oxygen\\/16x16\\/actions\\/view-refresh.png","system":true}]}',
+  ),
+  'Admin' => 
+  array (
+    'appdefaults' => '{"defaultInternalAddressbook":1}',
+  ),
+  'Webconference' => 
+  array (
+    'roomStatus' => '{"name":"roomStatus","records":[{"id":"A","value":"Active","system":true},{"id":"E","value":"Expired","system":true}]}',
+    'wconfRoles' => '{"name":"wconfRoles","records":[{"id":"MODERATOR","value":"Moderator","system":true},{"id":"ATTENDEE","value":"Attendee","system":true}]}',
+  ),
+  'Expressodriver' => 
+  array (
+    'externalDrivers' => '{"name":"externalDrivers","records":[{"id":"webdav","value":"Webdav","system":true},{"id":"owncloud","value":"Owncloud","system":true}]}',
+    'expressodriverSettings' => '{"default":{"useCache":true,"cacheLifetime":86400},"adapters":[{"id":367673,"name":"Expresso Drive","adapter":"owncloud","url":"https:\\/\\/expressodrive.serpro.gov.br","useEmailAsLoginName":true,"customfields":[]}]}',
+  ),
+  'profiler' => 
+  array (
+    'queryProfiles' => true,
+    'queryProfilesDetails' => true,
+  ),
+  'redirecting' => 
+  array (
+    'active' => false,
+    'ldapAttribute' => 'manager',
+    'cookieName' => 'BALANCEID',
+    'defaultCookieValue' => '.kristina',
+  ),
+  'actionqueue' => 
+  array (
+    'active' => false,
+    'backend' => 'Redis',
+    'host' => 'localhost',
+    'port' => 6379,
+  ),
+  'tmpdir' => '/tmp',
+  'helpUrl' => 'http://comunidadeexpresso.serpro.gov.br/expressov3/tutorial/html/index.html',
+  'mapPanel' => 0,
+  'applauncher' => 
+  array (
+    'domain' => 'CONFIG_DOMAIN',
+    'applications' => 
+    array (
+      'listadmin' => 'https://aplicacoesexpresso.serpro.gov.br/',
+    ),
+  ),
+  'denySurveys' => true,
+  'themes' => 
+  array (
+    'default' => 0,
+    'cookieTheme' => '',
+    'themelist' => 
+    array (
+      0 => 
+      array (
+        'name' => 'Tine 2.0 Default Skin',
+        'path' => 'tine20',
+        'useBlueAsBase' => 1,
+      ),
+      1 => 
+      array (
+        'name' => 'Expresso 3.0',
+        'path' => 'expresso30',
+        'useBlueAsBase' => 1,
+      ),
+      2 => 
+      array (
+        'name' => 'Serpro',
+        'path' => 'serpro',
+        'useBlueAsBase' => 1,
+      ),
+    ),
+  ),
+  'plugins' => 
+  array (
+    'mobile' => 
+    array (
+      'url' => 'https://www.serpro.gov.br',
+      'redirect' => false,
+    ),
+    'active' => true,
+  ),
+  'allowedJsonOrigins' => 
+  array (
+    0 => '10.0.2.15',
+  ),
+  'email' => 
+  array (
+    'maxContactAddToUnknown' => 10,
+    'maxMessageSize' => 52428800,
+  ),
+  'stateprovider' => 
+  array (
+    'provider' => 'localStorage',
+  ),
+  'certificate' => 
+  array (
+    'active' => true,
+    'useKeyEscrow' => true,
+    'masterCertificate' => '/usr/share/ssl/certs/http/cas/mastercert.pem',
+  ),
+  'smtp' => 
+  array (
+    'active' => true,
+    'backend' => 'standard',
+    'hostname' => '127.0.0.1',
+    'port' => 25,
+    'ssl' => 'none',
+    'auth' => 'none',
+    'primarydomain' => 'CONFIG_DOMAIN',
+    'secondarydomains' => '',
+    'obligatorydomains' => '',
+    'from' => '',
+    'username' => '',
+    'password' => '',
+    'name' => 'localhost',
+    'postfix' => 
+    array (
+      'port' => 3306,
+    ),
+  ),
+  'imap' => 
+  array (
+    'active' => true,
+    'backend' => 'cyrus',
+    'host' => '127.0.0.1',
+    'port' => 143,
+    'ssl' => 'none',
+    'useSystemAccount' => 1,
+    'domain' => '',
+    'dbmail' => 
+    array (
+      'port' => 3306,
+    ),
+    'cyrus' => 
+    array (
+      'admin' => 'cyrus-admin',
+      'password' => 'CONFIG_PASSWORD',
+      'useProxyAuth' => '1',
+    ),
+    'quota' => 
+    array (
+      'default' => 500,
+      'total' => '',
+    ),
+    'useEmailAsLoginName' => '1',
+    'dovecot' => 
+    array (
+      'port' => 3306,
+      'scheme' => 'PLAIN-MD5',
+    ),
+  ),
+  'domain' => 'CONFIG_DOMAIN',
+  'Tinebase_User_BackendType' => 'Ldap',
+  'Tinebase_User_BackendConfiguration' => 
+  array (
+    'host' => '127.0.0.1',
+    'username' => 'cn=ldap-admin,CONFIG_DC_LDAP',
+    'password' => 'CONFIG_PASSWORD',
+    'userDn' => 'ou=usuarios,CONFIG_DC_LDAP',
+    'groupsDn' => 'ou=grupos,CONFIG_DC_LDAP',
+    'minUserId' => '1000',
+    'maxUserId' => '99999',
+    'minGroupId' => '900',
+    'maxGroupId' => '999',
+    'defaultUserGroupName' => 'grupo-user',
+    'defaultAdminGroupName' => 'grupo-admin',
+    'groupUUIDAttribute' => 'gidNumber',
+    'userUUIDAttribute' => 'uidNumber',
+    'readonly' => '0',
+    'masterLdapHost' => 'localhost',
+    'masterLdapUsername' => 'cn=ldap-admin,CONFIG_DC_LDAP',
+    'masterLdapPassword' => 'CONFIG_PASSWORD',
+    'mailListControl' => '1',
+    'mailListDn' => 'ou=listas,CONFIG_DC_LDAP',
+    'checkExpiredPassword' => '0',
+    'passwordExpirationAttribute' => '',
+    'passwordExpirationInterval' => '',
+    'mailListGid' => '901',
+    'bindRequiresDn' => true,
+    'syncWhenNotFound' => '1',
+    'userOus' => '',
+    'userLoginForUserIdgeneration' => 1,
+    'userFilter' => '&(phpgwaccounttype=u)',
+    'extraSchemas' => 'phpgwaccount;qmailuser;person',
+    'extraAttributes' => 'phpgwaccounttype=u',
+    'userSearchScope' => '1',
+    'groupFilter' => '',
+    'groupSchemas' => '',
+    'groupAttributes' => '',
+    'groupOU' => '',
+    'groupSearchScope' => '1',
+    'pwEncType' => 'CRYPT',
+    'useRfc2307bis' => false,
+    'saveStatus' => '1',
+    'displaynameFormat' => '1',
+    'displayName' => '',
+    'fullName' => '',
+    'mailListFilter' => '(phpgwaccounttype=l)',
+    'mailListSchemas' => 'phpgwaccount;qmailuser',
+    'mailListAttributes' => 'phpgwaccounttype=l',
+  ),
+  'Tinebase_Authentication_BackendType' => 'Ldap',
+  'sieve' => 
+  array (
+    'active' => true,
+    'hostname' => '127.0.0.1',
+    'port' => 4190,
+    'ssl' => 'none',
+    'proxy' => 
+    array (
+      'user' => 'cyrus-admin',
+      'password' => 'CONFIG_PASSWORD',
+      'useAuth' => 1,
+    ),
+    'limitDomains' => 0,
+    'allowedDomains' => '',
+  ),
+  'Tinebase_Authentication_BackendConfiguration' => 
+  array (
+    'accountFilterFormat' => '(&(phpgwaccounttype=u)(mail=%s))',
+    'accountCanonicalForm' => '2',
+    'tryUsernameSplit' => false,
+    'bindRequiresDn' => '1',
+    'host' => '127.0.0.1',
+    'username' => 'cn=ldap-admin,CONFIG_DC_LDAP',
+    'password' => 'CONFIG_PASSWORD',
+    'baseDn' => 'CONFIG_DC_LDAP',
+    'accountDomainName' => 'CONFIG_DOMAIN',
+    'accountDomainNameShort' => '',
+  ),
+  'database' => 
+  array (
+    'host' => '127.0.0.1',
+    'dbname' => 'db_CONFIG_ORG',
+    'username' => 'user_CONFIG_ORG',
+    'password' => 'CONFIG_PASSWORD',
+    'adapter' => 'pdo_pgsql',
+    'tableprefix' => 'tine20_',
+    'port' => 5432,
+    'profiler' => true,
+  ),
+  'acceptedTermsVersion' => '1',
+  'redirectAlways' => '0',
+  'changepw' => true,
+  'pwPolicyActive' => 0,
+  'pwPolicyOnlyASCII' => 0,
+  'pwPolicyMinLength' => '0',
+  'pwPolicyMinWordChars' => '0',
+  'pwPolicyMinUppercaseChars' => '0',
+  'pwPolicyMinSpecialChars' => '0',
+  'pwPolicyMinNumbers' => '0',
+  'pwPolicyForbidUsername' => 0,
+  'pwPolicyForbidSamePassword' => 0,
+  'saveusername' => 0,
+  'Addressbook' => 
+  array (
+    'contactSalutation' => '{"name":"contactSalutation","records":[{"id":"MR","value":"Mr","gender":"male","image":"images\\/empty_photo_male.png","system":true},{"id":"MS","value":"Ms","gender":"female","image":"images\\/empty_photo_female.png","system":true},{"id":"COMPANY","value":"Company","gender":"other","image":"images\\/empty_photo_company.png","system":true}]}',
+  ),
+  'asdatabase' => 
+  array (
+    'active' => false,
+    'adapter' => 'pdo_mysql',
+    'port' => '',
+  ),
+  'accesslog' => 
+  array (
+    'disableactivesyncaccesslog' => '',
+    'disabledavaccesslog' => '',
+  ),
+);

@@ -1,0 +1,281 @@
+#!/bin/bash
+
+# Expresso v3 shell script apache2 functions
+# This file are files dependencies. Do not run it alone!
+
+PKGS_APACHE="apache2 libapache2-mod-php php php-imap php-ldap php-pgsql php-cgi php-cli php-curl php-xmlrpc php-memcache php-pspell php-zip zip unzip memcached python-software-properties php-date php-gd php-mcrypt php-xml"
+
+# This function install or configure apache2 server on host
+function config_apache() {
+
+	if [ -d /tmp/tmp_expresso ]; then rm -rf /tmp/tmp_expresso; fi
+
+	# faz backup da pasta do expresso original
+	if [ -d /var/www/html/expressov3 ]; then
+		if [ -d $backup_folder/expressov3 ]; then
+			rm -rf $backup_folder/expressov3
+		fi
+
+		mv /var/www/html/expressov3 $backup_folder/expressov3
+	fi
+
+        rm -rf /var/www/html/expressov3
+	mkdir -p /var/www/html/expressov3
+
+#	clear
+	show_msg 33
+
+	act_title=$( show_msg 34 )
+	act_msg=$( show_msg 35 ) 
+
+	if [ "$my_os" == "debian" ]; then
+
+		# se for INSTALACAO, instala os pacotes do apache2
+		if [ "$SETUP_TYPE" == "install" ]; then
+			echo $( show_msg 33 ) &>> $log
+			#Installing openldap packages	
+			debconf-apt-progress -- apt-get -y install $PKGS_APACHE  
+		fi
+
+		count_files=$( find $my_path/download/ -maxdepth 1 -type f -iname "*.tar.bz2" | wc -l )
+
+		if [ $count_files -eq 0 ]; then
+			act_title=$( show_msg 62 )
+			act_msg=$( show_msg 36 )
+
+			# pacote nao foi encontrado, gostaria de baixar na internet?
+			dialog --backtitle "$act_backtitle" --title "$act_title" --yesno "$act_msg" 0 0
+
+			# caso deseje BAIXAR o pacote
+			if [ $? -eq 0 ]; then
+				cd $my_path/download
+
+				act_result=""
+				check_internet 0
+
+				# verifica se tem acesso direto a internet
+				if [ "$act_result" == "OK" ]; then
+
+					act_result=""
+					download_expresso 0
+					if [ "$act_result" == "OK" ]; then
+						count_files=1
+					else
+						#erro ao baixar pacote do expresso
+						act_msg=$( show_msg 63 )
+						dialog --backtitle "$act_backtitle" --title "$act_title" --msgbox "$act_msg $EXPRESSO_PACKAGE" 0 0
+						show_msg 4
+						exit 0
+					fi
+				else
+					# se der falha no wget
+					while [ $count_files -eq 0 ]; do
+						act_title=$( show_msg 69 )
+						act_msg=$( show_msg 64 )
+
+						dialog --backtitle "$act_backtitle" --title "$act_title" --yesno "$act_msg" 0 0
+
+						if [ $? -eq 0 ]; then
+
+							counter=0
+							limit=3    # limite de tentativas de configuracao do proxy
+							while [ $counter -le $limit ]; do
+								if [ $counter -eq $limit ]; then
+									count_files=0
+									break
+								fi
+								proxy_config 
+								counter=$( expr $counter + 1 )
+								act_result=""
+								download_expresso $PROXY_TYPE
+								if [ "$act_result" == "OK" ]; then
+									count_files=1
+									break
+								else
+									act_msg="$( show_msg 72 ) $EXPRESSO_PACKAGE $( show_msg 73 )"
+									dialog --backtitle "$act_backtitle" --title "$act_title" --yesno "$act_msg" 0 									
+									if [ $? -eq 0 ]; then
+										count_files=0
+									else
+										count_files=0
+										break
+									fi
+								fi
+							done
+						else
+							#disse que nao usa proxy em internet
+							act_msg=$( show_msg 63 )
+							dialog --backtitle "$act_backtitle" --stdout --title "$act_title" --msgbox "$act_msg $EXPRESSO_PACKAGE" 0 0 
+							count_files=0
+							break
+						fi
+
+					done
+				fi
+			fi
+		fi
+
+		if [ $count_files -eq 0 ]; then
+			act_title=$( show_msg 5 )
+			act_msg=$( show_msg 12 )
+			dialog --backtitle "$act_backtitle" --stdout --title "$act_title" --msgbox "\n$act_msg\n" 7 30
+			show_msg 4
+			exit 1
+		fi
+
+		if [ $count_files -eq 1 ]; then
+
+			mkdir /tmp/tmp_expresso &>> $log
+			rm -rf /tmp/tmp_expresso/*  > /dev/null
+
+			act_msg=$( show_msg 37 )
+
+			pkg_expresso=$( ls $my_path/download/*.tar.bz2 )
+
+			( pv -n "$pkg_expresso" | tar xjf - -C /tmp/tmp_expresso/ ) &>/dev/stdout | dialog --backtitle "$act_backtitle" --gauge "$act_msg" 6 60
+
+			if [ $( ls /tmp/tmp_expresso/ | wc -l ) -eq 1 ]; then
+				# se ao descompactar, tiver um subdiretorio, usa-se este metodo
+				subdir_package=$( ls /tmp/tmp_expresso/ )
+				
+				mv /tmp/tmp_expresso/$subdir_package/* /var/www/html/expressov3/
+			else
+				mv /tmp/tmp_expresso/* /var/www/html/expressov3/
+			fi
+
+			# se for UPDATE apenas, copia o config.inc.php antigo e joga na pasta nova
+			if [ "$SETUP_TYPE" == "update" ]; then
+				if [ -f $backup_folder/expressov3/config.inc.php ]; then
+					cp -rf $backup_folder/expressov3/config.inc.php /var/www/html/expressov3/config.inc.php
+				fi
+			else
+			# inicia processo de INSTALACAO se nao for update
+
+				if [ ! "$THE_PASSWORD" ]; then
+					get_password
+				fi
+
+				if [ ! "$THE_PASSWORD" ]; then
+					show_msg 4
+					exit 0
+				fi
+
+				act_msg=$( show_msg 35 )
+
+				(
+
+				cd /etc/apache2/sites-enabled/
+
+				echo 30
+
+				# desabilita os antigos sites no apache pela pasta /etc/apache2/sites-enabled
+				for act_link in $( ls ); do
+					#if is simbolic link, just disable
+					if [ $act_link ]; then
+						if [ -L $act_link ]; then
+							a2dissite $act_link &>> $log
+						else
+							# if directory or file, move
+							mv $act_link /etc/apache/sites-available/ &>> $log
+						fi
+					fi
+				done
+
+				cp -rf $my_path/files/debian/etc/apache2/sites-available/expressov3-ssl /etc/apache2/sites-available/expressov3-ssl
+				cp -rf $my_path/files/debian/etc/apache2/sites-available/expressov3 /etc/apache2/sites-available/expressov3
+
+				sed -i "s/LDAP_DOMAIN/$MY_DOMAIN/g" /etc/apache2/sites-available/expressov3
+				sed -i "s/LDAP_DOMAIN/$MY_DOMAIN/g" /etc/apache2/sites-available/expressov3-ssl
+
+				echo 50
+
+				a2enmod ssl &>> $log
+
+				a2ensite expressov3 &>> $log
+				a2ensite expressov3-ssl &>> $log
+
+				echo 70
+	
+				# PHP.INI
+				cp -rf $my_path/files/debian/etc/php/7.0/apache2/php.ini /etc/php/7.0/apache2/php.ini
+
+				if [ ! -d /etc/apache2/ssl ]; then
+					mkdir /etc/apache2/ssl
+					chown -R www-data:www-data /etc/apache2/ssl
+				fi
+
+				echo 80
+
+                                #by zapa, corrigo by bebe
+                                #cria o config base parasuportar os demais domínios
+                                #
+                                mkdir /var/www/html/expressov3  2>>$log
+                                #cp -rf $my_path/files/config.inc.php.base /var/www/html/expressov3/config.inc.php
+                                #sed -i "s#INPUT_PASSWORD#$THE_PASSWORD#g" /var/www/html/expressov3/config.inc.php 
+                                #chown www-data /var/www/html/expressov3/config.inc.php
+                                #chmod 770 /var/www/html/expressov3/config.inc.php
+                                #sed -i "s#dummy.org.br#$MY_DOMAIN#g" /var/www/html/expressov3/config.inc.php
+				# copia o config de dominio global
+		                cp -r $my_path/files/configs/config.inc.php /var/www/html/expressov3/config.inc.php 2>>$log 
+                		chown www-data /var/www/html/expressov3/config.inc.php
+				sed -i "s/CONFIG_DOMAIN/$MY_DOMAIN/g" /var/www/html/expressov3/config.inc.php
+				sed -i "s#INPUT_PASSWORD#$THE_PASSWORD#g" /var/www/html/expressov3/config.inc.php
+                
+                                # cria estrutura para o dominio informado
+                                # obs: demais dominios devem ser adicionados manualmente a partir deste exemplo
+                                #
+                                mkdir /var/www/html/expressov3/domains 2>>$log
+                                mkdir /var/www/html/expressov3/domains/$MY_DOMAIN 2>>$log
+                                chown www-data /var/www/html/expressov3/domains
+                                chown www-data /var/www/html/expressov3/domains/$MY_DOMAIN
+                                #cp -rf $my_path/files/config.inc.php /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+				#sed -i "s#INPUT_PASSWORD#$THE_PASSWORD#g" /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+                                #chmod 770 /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+				cp -r $my_path/files/configs/domains/config.inc.php_preinstall /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php  2>>$log
+				chown www-data /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+				sed -i "s/CONFIG_PASSWORD/$THE_PASSWORD/g" /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+				sed -i "s/CONFIG_DOMAIN/$MY_DOMAIN/g" /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+				sed -i "s/CONFIG_DC_LDAP/$MY_DC/g" /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+				sed -i "s/CONFIG_ORG/$MY_ORG/g" /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+
+
+				APACHE_IP=$( get_host_ip )
+				host_ip=$( get_host_ip )
+
+				sed -i "s/IP_SERVER/$host_ip/g" /var/www/html/expressov3/config.inc.php	
+                                sed -i "s/IP_SERVER/$host_ip/g" /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
+
+				
+				) | dialog --backtitle "$act_backtitle" --title "$act_msg" --gauge "$act_msg" 8 60 0				
+
+#				clear
+
+				echo $( show_msg 45 )
+
+				my_country=$( locale | grep 'LANG=' | awk -F '.' '{print $1}' | awk -F '_' '{print $2}' )
+
+				if [ ! "$my_country" ]; then
+					my_country="BR"
+				fi
+
+				# building certificate...
+				openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 -subj "/C=$my_country/ST=./L=./O=$MY_ORG/CN=$MY_DOMAIN" -keyout /etc/apache2/ssl/apache.key  -out /etc/apache2/ssl/apache.crt
+
+			#fim do processo de INSTALACAO
+			fi
+
+			# permissiona a pasta /var/www/html/expressov3
+			chown -R root:www-data /var/www/html/expressov3 &>> $log
+			chmod -R 750 /var/www/html/expressov3 &>> $log
+
+			service apache2 restart &>> $log
+
+		else
+		# caso tenha mais de um pacote de instalacao do expresso na pasta 'download'
+			echo "Not Implemented"
+			exit 1
+		fi
+	fi
+}
+
+

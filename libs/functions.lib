@@ -1,0 +1,455 @@
+#!/bin/bash
+
+# Expresso v3 - Arquivo de funcoes do instalador
+
+# Checa se e root
+function is_root() {
+	if [ "$( id -u )" == "0" ]; then
+		echo "OK"
+	else
+		echo "Fail"
+	fi
+}
+
+# Informa o SO e versao
+# Exemplo: 'debian:7'
+function so_version() {
+	# valid SO return:
+	# debian
+	# ??? --> not yet
+	if [ ! -f /etc/debian_version ]; then
+		echo "other:0"
+	else
+		echo "debian:"$( cat /etc/debian_version | awk -F '.' '{print $1}' )
+	fi
+}
+
+# Diz se o comando existe no SO ou nao
+function find_prog() {
+	local my_prog=$( whereis $1 | awk '{print $2}' )
+	if [ "$my_prog" ] && [ -f $my_prog ]; then
+		echo "OK"
+	else
+		echo "Fail"
+	fi
+}
+
+# Diz se o pacote esta instalado no SO ou nao
+function find_pkg() {
+	if [ $( dpkg --get-selections | grep -ic $1 ) -ge 1 ]; then
+		local my_pkg=$( dpkg -s $1 | grep 'Status:' | grep -wic 'install' )
+		if [ $my_pkg -ge 1 ]; then
+			echo "OK"
+		else
+			echo "Fail"
+		fi
+	else
+		echo "Fail"
+	fi
+}
+
+# Responsavel por exibir as mensagens no instalador de acordo com a variavel de linguagem setada
+# A variavel CUR_LANG deve estar com os valores: 'pt_br', 'esp' ou 'eng'
+# Verificar arquivo lang.lib
+function show_msg() {
+	#show_msg code
+	#code = code of messagen (view lang.lib to clarify)
+
+	if [ ! -f $my_path/libs/lang.lib ]; then
+		echo "lang.lib not found."
+		exit 0
+	fi
+
+	local the_msg=$( cat $my_path/libs/lang.lib | grep "$CUR_LANG::" | grep "::$1::" | awk -F '::' '{print $3}' )
+
+	if [ -z "$the_msg" ]; then
+		echo "Fail"
+	else
+		echo -e "$the_msg"
+	fi
+}
+
+# Configura o locale no sistema
+function config_locale() {
+	if [ ! -f /etc/default/locale ]; then
+		echo "Fail"
+	else
+		if [ "$my_os" == "debian" ]; then
+			cp -rf $my_path/files/debian/etc/locale.gen /etc/locale.gen
+			cp -rf $my_path/files/debian/etc/locale.alias /etc/locale.alias
+			cp -rf $my_path/files/debian/etc/default/locale /etc/default/locale
+
+			export LANG="pt_BR.UTF-8" 
+			export LANGUAGE="pt_BR:pt:en" 
+
+			locale-gen &> /dev/null
+
+			update-locale &> /dev/null
+
+		else
+			echo "Fail"
+		fi
+	fi
+}
+
+# Pega a organizacao do usuario e seta as variaveis MY_ORG
+function get_organization() {
+	if [ ! "$MY_ORG" ]; then
+		its_ok=0
+		while [ $its_ok -eq 0 ]; do
+
+			act_msg=$( show_msg 43 )
+			act_result=$( dialog --backtitle "$act_backtitle" --stdout --inputbox "$act_msg" 0 0 )
+
+			if [ ! $? -eq 0 ]; then
+				echo $( show_msg 46 )
+				echo $( show_msg 4 )
+				exit 0
+			else
+				MY_ORG=$act_result
+				its_ok=1
+			fi
+		done
+	else
+		echo $MY_ORG		
+	fi
+}
+
+# Pega o dominio do usuario e seta a variavel MY_DOMAIN
+function get_domain() {
+	if [ ! "$MY_DOMAIN" ]; then
+		its_ok=0
+		while [ $its_ok -eq 0 ]; do
+
+			act_msg=$( show_msg 44 )
+			act_answer=$( dialog --backtitle "$act_backtitle" --stdout --inputbox "$act_msg" 0 0 )
+
+			if [ ! $? -eq 0 ]; then
+				echo $( show_msg 46 )
+				echo $( show_msg 4 )
+				exit 0
+			else
+				MY_DOMAIN=$act_answer
+				its_ok=1
+			fi
+		done
+	else
+		echo $MY_DOMAIN
+	fi
+}
+
+# Formata um DC para o LDAP colocando na variavel MY_DC
+function get_dc() {
+	if [ "$MY_DOMAIN" ]; then
+		if [ ! "$MY_DC" ]; then
+			for each_word in $( echo $MY_DOMAIN | tr [.] [\ ] ); do 
+				if [ ! "$MY_DC" ]; then 
+					MY_DC=$( echo "dc=$each_word" )
+				else
+					MY_DC=$( echo "$MY_DC,dc=$each_word" )
+				fi
+			done
+		fi
+	else
+		echo "Fail"
+	fi
+}
+
+# Pega a primeira interface de rede valida no SO
+function get_ifaces() {
+	local my_ifaces=""
+	for cada in $( ip -4 addr show | awk -F ':' '{print $2}' | grep -vw 'lo' | sort -r ); do 
+		if [ $cada ]; then 
+			my_ifaces="$cada "$( echo $my_ifaces )
+		fi; 
+	done
+
+	echo $my_ifaces
+}
+
+# Pega o IP do LDAP e ajusta a variavel LDAP_IP
+function get_ldap_ip() {
+	act_msg=$( show_msg 30 )
+	local act_result=$( dialog --backtitle "$act_backtitle" --stdout --inputbox "$act_msg" 0 0 "127.0.0.1" )
+	if [ $? -eq 0 ]; then
+		LDAP_IP="$act_result"
+		echo "OK"
+	else
+		LDAP_IP="127.0.0.1"
+		echo "Fail"	
+	fi
+}
+
+# Pega o IP do IMAP e ajusta a variavel get_imap_ip
+function get_imap_ip() {
+	act_msg=$( show_msg 80 )
+	local act_result=$( dialog --backtitle "$act_backtitle" --stdout --inputbox "$act_msg" 0 0 "127.0.0.1" )
+	if [ $? -eq 0 ]; then
+		IP_IMAP_SERVER="$act_result"
+		echo "OK"
+	else
+		IP_IMAP_SERVER="127.0.0.1"
+		echo "Fail"	
+	fi
+}
+
+# Pega o IP do SMTP e ajusta a variavel SMTP_IP
+function get_smtp_ip() {
+	act_msg=$( show_msg 79 )
+	local act_result=$( dialog --backtitle "$act_backtitle" --stdout --inputbox "$act_msg" 0 0 "127.0.0.1" )
+	if [ $? -eq 0 ]; then
+		SMTP_IP="$act_result"
+		echo "OK"
+	else
+		SMTP_IP="127.0.0.1"
+		echo "Fail"	
+	fi
+}
+
+# Pergunta a senha desejada e seta a variavel THE_PASSWORD
+function get_password() {
+	local act_pwd=""
+	local act_pwd2="1"
+
+	while [ ! "$act_pwd" == "$act_pwd2" ]; do
+		act_msg=$( show_msg 53 )
+		act_pwd=$( dialog --backtitle "$act_backtitle" --stdout --inputbox "$act_msg" 0 0 "" )
+		if [ $? -eq 0 ]; then
+			if [ ! "$act_pwd" ]; then
+				act_title=$( show_msg 55 )
+				act_msg=$( show_msg 56 )
+				dialog --backtitle "$act_backtitle" --title "$act_title" --msgbox "$act_msg" 0 0
+				act_pwd=""
+				act_pwd2="1"
+			else
+				act_msg=$( show_msg 54 )
+				act_pwd2=$( dialog --backtitle "$act_backtitle" --stdout --inputbox "$act_msg" 0 0 "" )
+				if [ $? -eq 0 ]; then			
+					if [ ! "$act_pwd" == "$act_pwd2" ]; then
+						act_title=$( show_msg 55 )
+						act_msg=$( show_msg 57 )	
+						dialog --backtitle "$act_backtitle" --title "$act_title" --msgbox "$act_msg" 0 0
+						act_pwd=""
+						act_pwd2="1"
+					else
+						#everything is OK	
+						THE_PASSWORD="$act_pwd2"			
+						break
+					fi
+				else
+					act_pwd=""
+					act_pwd2="1"
+					break
+				fi
+			fi
+		else
+			act_result=""
+			act_result2="1"
+			break
+		fi
+	done
+
+	if [ "$act_pwd2" == "1" ]; then
+		echo "Fail"
+	fi
+
+}
+
+# Informa o IP da maquina
+function get_host_ip() {
+	local my_ip=$( ip -4 addr show | grep 'inet ' | grep -v '127.' | awk '{print $2}' | awk -F '/' '{print $1}' )
+	echo "$my_ip"
+}
+
+# Verifica se o MX existe no DNS
+function mx_verify() {
+	if [ ! "$MY_DOMAIN" ]; then
+		echo "Fail"
+	else
+		if [ $( dig -t mx "$MY_DOMAIN" +short | grep -ci "$MY_DOMAIN" ) -eq 0 ]; then
+			echo "Fail"
+		else
+			echo "OK"
+		fi
+	fi
+}
+
+# checa se a internet funciona diretamente
+# parametros disponiveis
+# check_internet 0   ---> sem proxy
+# check_internet 1   ---> com proxy autenticado
+# check_internet 2   ---> com proxy sem autenticacao
+# requisitos da função:
+# variaveis devem estar setadas: PROXY_IP, PROXY_PORT, PROXY_USER e PROXY_PWD
+function check_internet() {
+
+	the_url="www.google.com.br/index.html"
+	the_file="index.html"
+
+        act_result="OK"
+        
+#	if [ ! $1 ]; then
+#		act_result="Fail"
+#	elif [ $1 -ge 0 ] && [ $1 -le 2 ]; then
+#		if [ -f $the_file ]; then 
+#			rm -rf $the_file
+#		fi
+#
+#		act_title=$( show_msg 5 )
+#		act_msg=$( show_msg 74 )
+
+		# se for sem proxy
+#		if [ $1 -eq 0 ]; then
+#			( wget --no-check-certificate $the_url -o $log -t 1 -T 5 ) | dialog --backtitle "$act_backtitle" --cr-wrap --backtitle "$act_title" --title "$act_title" --infobox "$act_msg" 6 40
+#
+#		# se for proxy autenticado
+#		elif [ $1 -eq 1 ]; then
+#			if [ ! $PROXY_IP ] || [ ! $PROXY_PORT ] || [ ! $PROXY_USER ] || [ ! $PROXY_PWD ]; then
+#				act_result="Fail"
+#			else
+#				( wget --no-check-certificate use_proxy=yes -e http_proxy=http://$PROXY_USER:"$PROXY_PWD"@$PROXY_IP:$PROXY_PORT $the_url -o $log -t 1 -T 5 ) | dialog --backtitle "$act_backtitle" --cr-wrap --backtitle "$act_title" --title "$act_title" --infobox "$act_msg" 6 40
+#			fi
+#
+		# se for proxy sem autenticacao
+#		elif [ $1 -eq 2 ]; then
+#			if [ ! $PROXY_IP ] || [ ! $PROXY_PORT ]; then
+#				act_result="Fail"
+#			else
+#				( wget --no-check-certificate use_proxy=yes -e http_proxy=http://$PROXY_IP:$PROXY_PORT $the_url -o $log -t 1 -T 5 ) | dialog --backtitle "$act_backtitle" --cr-wrap --backtitle "$act_title" --title "$act_title" --infobox "$act_msg" 6 40
+#			fi
+#		fi
+#
+#		if [ -f $the_file ]; then
+#			act_result="OK"
+#		else
+#			act_result="Fail"
+#		fi
+#	else
+#		act_result="Fail"
+#	fi
+}
+
+
+# faz o download do pacote expresso
+# parametros disponiveis
+# download_expresso 0   ---> sem proxy
+# download_expresso 1   ---> com proxy autenticado
+# download_expresso 2   ---> com proxy sem autenticacao
+# requisitos da função:
+# variaveis devem estar setadas: URL_DOWNLOAD, EXPRESSO_PACKAGE, PROXY_IP, PROXY_PORT, PROXY_USER e PROXY_PWD, 
+function download_expresso() {
+
+	the_url="$URL_DOWNLOAD"
+	the_file="$EXPRESSO_PACKAGE"
+
+	#se nao houver parametros, falha
+	if [ ! $1 ] || [ ! $the_url ] || [ ! $the_file ]; then
+		act_result="Fail"
+	elif [ $1 -ge 0 ] && [ $1 -le 2 ]; then
+		if [ -f $the_file ]; then 
+			rm -rf $the_file
+		fi
+
+		act_title=$( show_msg 5 )
+		act_msg=$( show_msg 75 )
+
+		# se for sem proxy
+		if [ $1 -eq 0 ]; then
+			wget --no-check-certificate "$the_url" 2>&1 | stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { print substr($0,63,3) }' | dialog --backtitle "$act_backtitle" --gauge "$act_msg $the_file" 10 100
+
+		# se for proxy autenticado
+		elif [ $1 -eq 1 ]; then
+			if [ ! $PROXY_IP ] || [ ! $PROXY_PORT ] || [ ! $PROXY_USER ] || [ ! $PROXY_PWD ]; then
+				act_result="Fail"
+			else
+				wget --no-check-certificate use_proxy=yes -e http_proxy=http://$PROXY_USER:"$PROXY_PWD"@$PROXY_IP:$PROXY_PORT "$the_url" 2>&1 | stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { print substr($0,63,3) }' | dialog --backtitle "$act_backtitle" --gauge "$act_msg $the_file" 10 70
+			fi
+
+		# se for proxy sem autenticacao
+		elif [ $1 -eq 2 ]; then
+			if [ ! $PROXY_IP ] || [ ! $PROXY_PORT ]; then
+				act_result="Fail"
+			else
+				wget --no-check-certificate use_proxy=yes -e http_proxy=http://$PROXY_IP:$PROXY_PORT "$the_url" 2>&1 | stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { print substr($0,63,3) }' | dialog --backtitle "$act_backtitle" --gauge "$act_msg $the_file" 10 100
+			fi
+		fi
+
+		if [ -f $the_file ]; then
+			act_result="OK"
+		else
+			act_result="Fail"
+		fi
+	else
+		act_result="Fail"
+	fi
+}
+
+# configura um proxy para internet
+function proxy_config() {
+
+	PROXY_IP=""
+	PROXY_PORT=""
+	PROXY_USER=""
+	PROXY_PWD=""
+	PROXY_TYPE=0
+
+	act_title=$( show_msg 70 )
+
+	its_ok=1
+
+	act_msg=$( show_msg 65 )
+	PROXY_IP=$( dialog --backtitle "$act_backtitle" --stdout --inputbox "$act_msg" 0 0 "" )
+	# se deu OK
+	if [ $? -eq 0 ]; then 
+		act_msg=$( show_msg 71 )
+		PROXY_PORT=$( dialog --backtitle "$act_backtitle" --stdout --inputbox "$act_msg" 0 0 "80" )
+		# se deu OK
+		if [ $? -eq 0 ]; then 
+			act_msg=$( show_msg 66 )
+			# utiliza usuario e senha para o proxy?
+			dialog --backtitle "$act_backtitle" --title "$act_title" --yesno "$act_msg" 0 0
+
+			#se SIM
+			if [ $? -eq 0 ]; then
+				act_msg=$( show_msg 67 )
+				PROXY_USER=$( dialog --backtitle "$act_backtitle" --stdout --inputbox "$act_msg" 0 0 "" )
+				#se deu OK
+				if [ $? -eq 0 ]; then 
+					act_msg=$( show_msg 68 )
+					PROXY_PWD=$( dialog --backtitle "$act_backtitle" --stdout --inputbox "$act_msg" 0 0 "" )
+					#se cancelou
+					if [ $? -ne 0 ]; then 
+						its_ok=0
+					fi
+				else
+					its_ok=0
+				fi
+			else
+				if [ $PROXY_IP ] && [ $PROXY_PORT ]; then
+					if [ $PROXY_USER ] && [ $PROXY_PWD ]; then
+						PROXY_TYPE=1
+					else 
+						PROXY_USER=""
+						PROXY_PWD=""
+						PROXY_TYPE=2
+					fi
+					its_ok=1
+				else
+					PROXY_TYPE=0
+					its_ok=0
+				fi
+			fi
+		else
+			its_ok=0
+		fi
+	else
+		its_ok=0
+	fi
+
+if [ $its_ok -eq 0 ]; then
+	echo "Fail"
+else
+	echo "OK"
+fi
+
+}

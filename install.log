@@ -1,0 +1,81 @@
+Error: user/expresso-admin@serpro.gov.br Mailbox already exists
+Error: user/expresso-admin/Sent@serpro.gov.br Mailbox already exists
+Error: user/expresso-admin/Trash@serpro.gov.br Mailbox already exists
+Error: user/expresso-admin/Templates@serpro.gov.br Mailbox already exists
+Error: user/expresso-admin/Drafts@serpro.gov.br Mailbox already exists
+Criando usuario: expresso-admin. 
+Error: user/testador@serpro.gov.br Mailbox already exists
+Error: user/testador/Sent@serpro.gov.br Mailbox already exists
+Error: user/testador/Trash@serpro.gov.br Mailbox already exists
+Error: user/testador/Templates@serpro.gov.br Mailbox already exists
+Error: user/testador/Drafts@serpro.gov.br Mailbox already exists
+Criando usuario: testador. 
+Error: user/cyrus-admin@serpro.gov.br Mailbox already exists
+Error: user/cyrus-admin/Sent@serpro.gov.br Mailbox already exists
+Error: user/cyrus-admin/Trash@serpro.gov.br Mailbox already exists
+Error: user/cyrus-admin/Templates@serpro.gov.br Mailbox already exists
+Error: user/cyrus-admin/Drafts@serpro.gov.br Mailbox already exists
+Criando usuario: cyrus-admin. 
+Configura plugin para config.inc.php(configurações) não mais no bd
+Ativando o multidomínio...
+Copia um template de config para o diretório base(sem multidomínio)
+#Obs o multidomínio deverá ser configurado manualmente
+Copia o template de config global para o diretório base
+#Obs o multidomínio deverá ser configurado manualmente
+Criando diretório de cache default(/tmp/expressov3/tine20cache)
+Log do Expresso em /tmp/expressov3/expressov3.log
+Area temp em /tmp/expressov3/tine20tmp
+Arquivos em /tmp/expressov3/tine20files
+------------
+O usuario optou por configurar o setup automaticamente via instalador, iniciando processo...
+Debug: A linha de comando que rodou o setup automatico foi:
+-------------
+FINAL DA INSTALAÇÃO ExpressoBR\n\nOrganization: serpro\nBanco de dados: db_serpro\nUsuário Banco: user_serpro\nSenha Banco: serpro\nDominio : serpro.gov.br\nDC : dc=serpro,dc=gov,dc=br\nAdministrador Expresso: expresso-admin@serpro.gov.br\nSenha : serpro\nUsuário Setup: tine-admin\nSenha : serpro\nLogs e Caches do Expresso: /tmp/expressov3/serpro.gov.br\nObs: Verifique a ativação dos caches e o nivel de logs para ambientes em produção
+Instalando o Apache2 com PHP5...
+Considering dependency setenvif for ssl:
+Module setenvif already enabled
+Considering dependency mime for ssl:
+Module mime already enabled
+Considering dependency socache_shmcb for ssl:
+Module socache_shmcb already enabled
+Module ssl already enabled
+ERROR: Site expressov3 does not exist!
+ERROR: Site expressov3-ssl does not exist!
+mkdir: é impossível criar o diretório “/var/www/html/expressov3”: Arquivo existe
+mkdir: é impossível criar o diretório “/var/www/html/expressov3/domains”: Arquivo existe
+Instalando o OpenLDAP...
+58e68015 hdb_db_open: warning - no DB_CONFIG file found in directory /var/lib/ldap: (2).
+Expect poor performance for suffix "dc=serpro,dc=gov,dc=br".
+Error: user/expresso-admin@serpro.gov.br Mailbox already exists
+Error: user/expresso-admin/Sent@serpro.gov.br Mailbox already exists
+Error: user/expresso-admin/Trash@serpro.gov.br Mailbox already exists
+Error: user/expresso-admin/Templates@serpro.gov.br Mailbox already exists
+Error: user/expresso-admin/Drafts@serpro.gov.br Mailbox already exists
+Criando usuario: expresso-admin. 
+Error: user/testador@serpro.gov.br Mailbox already exists
+Error: user/testador/Sent@serpro.gov.br Mailbox already exists
+Error: user/testador/Trash@serpro.gov.br Mailbox already exists
+Error: user/testador/Templates@serpro.gov.br Mailbox already exists
+Error: user/testador/Drafts@serpro.gov.br Mailbox already exists
+Criando usuario: testador. 
+Error: user/cyrus-admin@serpro.gov.br Mailbox already exists
+Error: user/cyrus-admin/Sent@serpro.gov.br Mailbox already exists
+Error: user/cyrus-admin/Trash@serpro.gov.br Mailbox already exists
+Error: user/cyrus-admin/Templates@serpro.gov.br Mailbox already exists
+Error: user/cyrus-admin/Drafts@serpro.gov.br Mailbox already exists
+Criando usuario: cyrus-admin. 
+Configura plugin para config.inc.php(configurações) não mais no bd
+Ativando o multidomínio...
+Copia um template de config para o diretório base(sem multidomínio)
+#Obs o multidomínio deverá ser configurado manualmente
+Copia o template de config global para o diretório base
+#Obs o multidomínio deverá ser configurado manualmente
+Criando diretório de cache default(/tmp/expressov3/tine20cache)
+Log do Expresso em /tmp/expressov3/expressov3.log
+Area temp em /tmp/expressov3/tine20tmp
+Arquivos em /tmp/expressov3/tine20files
+------------
+O usuario optou por configurar o setup automaticamente via instalador, iniciando processo...
+Debug: A linha de comando que rodou o setup automatico foi:
+-------------
+FINAL DA INSTALAÇÃO ExpressoBR\n\nOrganization: serpro\nBanco de dados: db_serpro\nUsuário Banco: user_serpro\nSenha Banco: serpro\nDominio : serpro.gov.br\nDC : dc=serpro,dc=gov,dc=br\nAdministrador Expresso: expresso-admin@serpro.gov.br\nSenha : serpro\nUsuário Setup: tine-admin\nSenha : serpro\nLogs e Caches do Expresso: /tmp/expressov3/serpro.gov.br\nObs: Verifique a ativação dos caches e o nivel de logs para ambientes em produção

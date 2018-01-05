@@ -1,0 +1,6 @@
+Welcome to Setup of Expresso v3!
+The purpose of this installer is, to set up Expresso v3 in this host easily.
+You can:
+1 - Make a clean installation of Expresso v3; or
+2 - Make an update of Expresso v3 to a new existent version in Community.
+Click Next to continue the setup process...
