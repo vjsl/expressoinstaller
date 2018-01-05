@@ -12,7 +12,7 @@ function install_db() {
 
 	if [ "$my_os" == "debian" ]; then
 
-		#Installing openldap packages	
+		#Installing openldap packages
 		debconf-apt-progress -- apt-get -qq -y install $PKGS_DB
 
 		if [ ! "$THE_PASSWORD" ]; then
@@ -25,7 +25,7 @@ function install_db() {
 		fi
 
 		act_title=$( show_msg 48 )
-		act_msg=$( show_msg 49 ) 		
+		act_msg=$( show_msg 49 )
 
 		(
 
@@ -33,50 +33,48 @@ function install_db() {
 
 		echo 30
 
-		service postgresql restart 
+		service postgresql restart
 
 		echo 40
 
-		sleep 5		
+		sleep 5
 
-		sudo -u postgres psql -c "DROP DATABASE IF EXISTS db_${MY_ORG}" -o $log &> /dev/null 
+		psql -U postgres -c "DROP DATABASE IF EXISTS db_${MY_ORG}" -o $log &> /dev/null
 
-		sudo -u postgres psql -c "DROP USER IF EXISTS user_${MY_ORG}"  -o $log &> /dev/null
+		psql -U postgres -c "DROP USER IF EXISTS user_${MY_ORG}"  -o $log &> /dev/null
 
-		sudo -u postgres psql -c "DROP EXTENSION IF EXISTS unaccent;" -o $log &> /dev/null
+		psql -U postgres -c "DROP EXTENSION IF EXISTS unaccent;" -o $log &> /dev/null
 
 		sleep 0.5
-		sudo -u postgres psql -c "CREATE DATABASE db_${MY_ORG} WITH ENCODING 'UTF-8' TEMPLATE template0;" -o $log &> /dev/null
+		psql -U postgres -c "CREATE DATABASE db_${MY_ORG} WITH ENCODING 'UTF-8' TEMPLATE template0;" -o $log &> /dev/null
 
 		sleep 0.5
 		echo 50
-		sudo -u postgres psql -c "CREATE USER user_${MY_ORG} WITH PASSWORD '"$THE_PASSWORD"';" -o $log &> /dev/null
+		psql -U postgres -c "CREATE USER user_${MY_ORG} WITH PASSWORD '"$THE_PASSWORD"';" -o $log &> /dev/null
 
 		sleep 0.5
 		echo 60
-		sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE db_${MY_ORG} TO user_${MY_ORG};" -o $log &> /dev/null
+		psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE db_${MY_ORG} TO user_${MY_ORG};" -o $log &> /dev/null
 
 		sleep 0.5
 		echo 70
-		sudo -u postgres psql -d db_${MY_ORG} -f /usr/share/postgresql/9.5/extension/unaccent--1.0.sql -o $log &> /dev/null
+		psql -U postgres -d db_${MY_ORG} -f /usr/share/postgresql/9.5/extension/unaccent--1.0.sql -o $log &> /dev/null
 
 		sleep 0.5
 		echo 80
-		sudo -u postgres psql -c "CREATE EXTENSION unaccent;" -o $log &> /dev/null
+		psql -U postgres -c "CREATE EXTENSION unaccent;" -o $log &> /dev/null
 		echo 90
-               
-                sleep 0.5 
+
+                sleep 0.5
                 # Atualiza objetos de banco
                 #sudo -u postgres psql -q -d db_${MY_ORG} -f $my_path/files/pgdump_expressov3.dump -o $log &> $log
                 sleep 10
                 echo 100
-                
+
                 # Muda nome do banco e do usuário no config do dominio
                 sed -i "s#MYOU#${MY_ORG}#g" /var/www/html/expressov3/domains/$MY_DOMAIN/config.inc.php
 
-		) | dialog --backtitle "$act_backtitle" --title "$act_title" --gauge "$act_msg" 8 40 0				
+		) | dialog --backtitle "$act_backtitle" --title "$act_title" --gauge "$act_msg" 8 40 0
 
 	fi
 }
-
-
