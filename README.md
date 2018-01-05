@@ -24,3 +24,4 @@ Executo o instalador com o comando :~# /root/expresso-v3/install.sh
 Será solicitado o nome do cliente, o dominio, e uma senha.
 
 Ao final da instalação é esperado ter um usuário expresso-admin@dominio como administrador, um usuário testador@dominio como usuário normal e uma listaexemplo@dominio de testes já disponibilizados.
+"#Expresso Installer" 
